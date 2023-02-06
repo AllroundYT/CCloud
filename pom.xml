@@ -8,6 +8,23 @@
     <artifactId>CurseCloud</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <developers>
+        <developer>
+            <name>Julian S.</name>
+            <id>Allround</id>
+            <organization>Curse</organization>
+            <roles>
+                <role>
+                    Head of Development
+                </role>
+                <role>
+                    Projekt Owner
+                </role>
+            </roles>
+        </developer>
+    </developers>
+
     <modules>
         <module>CloudAPI</module>
         <module>CloudController</module>
@@ -17,8 +34,40 @@
     </modules>
 
     <properties>
+        <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.curse.allround.core</groupId>
+            <artifactId>NetworkAPI</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.curse.allround.core</groupId>
+            <artifactId>Utilities</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
