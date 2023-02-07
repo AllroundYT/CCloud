@@ -16,3 +16,7 @@ werden nicht gestoppt aber im Hintergrund von dem neuen Node gesteuert.
 Der aktuelle MainNode wird anhand seiner NetworkID, welche im die NetworkAPI zuteilt,
 in einer RedisDatenbank gespeichert und muss regelmäßig nach getragen werden. Ist dies nicht der Fall,
 wechselt der MainNode.
+
+Wenn der Serverhoster eine API hat ist es möglich mehrere VServer zu nutzen und diese nur
+dann zu starten, wenn sie gebraucht werden. Dabei würde ein Server Permanent laufen
+und ein anderer Server würde gestartet/gestoppt je nach cloud auslastung.

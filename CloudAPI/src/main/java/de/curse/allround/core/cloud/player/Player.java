@@ -2,11 +2,13 @@ package de.curse.allround.core.cloud.player;
 
 import de.curse.allround.core.cloud.proxy.Proxy;
 import de.curse.allround.core.cloud.server.Server;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 public abstract class Player {
     private final UUID uuid;
 

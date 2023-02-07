@@ -2,11 +2,13 @@ package de.curse.allround.core.cloud.servergroup;
 
 import de.curse.allround.core.cloud.server.Server;
 import de.curse.allround.core.cloud.server.StartConfiguration;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
 public abstract class ServerGroup {
     private final String name;
     private int minServers;

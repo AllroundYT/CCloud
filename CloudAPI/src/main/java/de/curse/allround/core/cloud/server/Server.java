@@ -1,9 +1,11 @@
 package de.curse.allround.core.cloud.server;
 
 import de.curse.allround.core.cloud.servergroup.ServerGroup;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public abstract class Server {
     private final String name;
 

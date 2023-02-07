@@ -1,8 +1,10 @@
 package de.curse.allround.core.cloud.proxy;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public abstract class Proxy {
     private final String name;
 

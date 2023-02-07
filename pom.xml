@@ -27,10 +27,9 @@
 
     <modules>
         <module>CloudAPI</module>
-        <module>CloudController</module>
-        <module>CloudDaemon</module>
         <module>CloudMinestomPlugin</module>
         <module>CloudVelocityPlugin</module>
+        <module>CloudNode</module>
     </modules>
 
     <properties>
@@ -61,6 +60,12 @@
         <dependency>
             <groupId>de.curse.allround.core</groupId>
             <artifactId>NetworkAPI</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.curse.allround.core</groupId>
+            <artifactId>LoggingAPI</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
