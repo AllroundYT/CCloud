@@ -1,6 +1,10 @@
 package de.curse.allround.core.cloud.module;
 
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisConnection;
+import com.lambdaworks.redis.RedisURI;
 import de.curse.allround.core.beta.NetworkAPI;
+import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 
@@ -17,7 +21,8 @@ import java.util.stream.Collectors;
 public class ModuleManager {
     private final List<Module> modules;
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-    //TODO
+    private RedisClient redisClient;
+    private RedisConnection<String,String> connection;
     private final String redisHost = "localhost";
     private final int redisPort = 5555;
     private UUID mainNode;
@@ -40,8 +45,9 @@ public class ModuleManager {
         this.modules = new CopyOnWriteArrayList<>();
     }
 
-    public void init() {
-        //TODO: verbindung zu redis aufbauen
+    private void init() {
+        redisClient = new RedisClient(RedisURI.create("redis://password@host:port"));
+        connection = redisClient.connect();
     }
 
     public void start() {
@@ -51,11 +57,32 @@ public class ModuleManager {
 
     public void stop() {
         executorService.shutdownNow();
-        //TODO:wenn mainnode dann austragen und danach redis connection schließen
+
+        ModuleDisconnectInfo disconnectInfo = new ModuleDisconnectInfo(getThisModule().get());
+        NetworkAPI.getInstance().sendPacket(disconnectInfo);
+
+        connection.close();
+        redisClient.shutdown();
     }
 
     public void update() {
-        //TODO: checken ob main node eingetragen ist. Wenn 2mal nicht dann eigenen Node eintragen
+        String mainNode = connection.get("main-node-network-id");
+
+        if (isMainNode()){
+            connection.setex("main-node-network-id",10000,NetworkAPI.getInstance().getIdentityManager().getThisIdentity().toString());
+        } else if (mainNode == null) {
+            if (!mainNodeRegistered){
+                connection.set("main-node-network-id",NetworkAPI.getInstance().getIdentityManager().getThisIdentity().toString());
+
+                this.mainNode = NetworkAPI.getInstance().getIdentityManager().getThisIdentity();
+
+                mainNodeRegistered = true;
+            }
+            mainNodeRegistered = false;
+        }else {
+            this.mainNode = UUID.fromString(mainNode);
+            mainNodeRegistered = true;
+        }
     }
 
     public boolean addModule(Module module) {

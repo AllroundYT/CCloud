@@ -11,15 +11,15 @@ import lombok.RequiredArgsConstructor;
 import java.util.UUID;
 
 /**
- * Wird gesendet, wenn ein neues Modul registriert wurde.
+ * Wird von einem Modul gesendet, wenn dieses stoppt.
  */
 @RequiredArgsConstructor
 @Getter
-public class ModuleConnectedInfo extends PacketType {
+public class ModuleDisconnectInfo extends PacketType {
 
     private final Module module;
 
-    public ModuleConnectedInfo(Packet packet) {
+    public ModuleDisconnectInfo(Packet packet) {
         super(packet);
         String name = packet.getData()[0];
         ModuleType moduleType = ModuleType.valueOf(packet.getData()[1]);
@@ -29,6 +29,6 @@ public class ModuleConnectedInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("MODULE_CONNECTED_INFO", PacketChannel.CLOUD,new String[]{module.getName(),module.getModuleType().name(),module.getNetworkId().toString()});
+        return Packet.regular("MODULE_DISCONNECT_INFO", PacketChannel.CLOUD,new String[]{module.getName(),module.getModuleType().name(),module.getNetworkId().toString()});
     }
 }
