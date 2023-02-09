@@ -4,11 +4,14 @@ import de.curse.allround.core.cloud.servergroup.ServerGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 public abstract class Server {
     private final String name;
 
+    private UUID networkId;
     private String status;
     private ServerGroup serverGroup;
     private boolean maintenance;

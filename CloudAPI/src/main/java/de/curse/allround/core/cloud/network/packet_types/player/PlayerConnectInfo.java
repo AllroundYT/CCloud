@@ -1,9 +1,9 @@
 package de.curse.allround.core.cloud.network.packet_types.player;
 
-import de.curse.allround.core.beta.network.Packet;
-import de.curse.allround.core.beta.network.PacketChannel;
-import de.curse.allround.core.beta.network.PacketType;
 import de.curse.allround.core.cloud.CloudAPI;
+import de.curse.allround.core.cloud.network.packet.Packet;
+import de.curse.allround.core.cloud.network.packet.PacketChannel;
+import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.player.Player;
 import de.curse.allround.core.cloud.player.PlayerSnapshot;
 import de.curse.allround.core.cloud.proxy.Proxy;

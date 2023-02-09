@@ -1,21 +1,22 @@
 package de.curse.allround.core.cloud;
 
-import de.curse.allround.core.beta.NetworkAPI;
-import de.curse.allround.core.beta.network.PacketChannel;
-import de.curse.allround.core.beta.network.PacketConverter;
+
 import de.curse.allround.core.cloud.extension.ExtensionManager;
 import de.curse.allround.core.cloud.module.ModuleManager;
-import de.curse.allround.core.cloud.network.listener.ModuleConnectListener;
-import de.curse.allround.core.cloud.network.listener.ModuleDisconnectListener;
+import de.curse.allround.core.cloud.network.packet.listener.ModuleConnectListener;
+import de.curse.allround.core.cloud.network.packet.listener.ModuleDisconnectListener;
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet.PacketChannel;
+import de.curse.allround.core.cloud.network.packet.PacketConverter;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleConnectInfo;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 import de.curse.allround.core.cloud.player.PlayerManager;
 import de.curse.allround.core.cloud.proxy.ProxyManager;
 import de.curse.allround.core.cloud.server.ServerManager;
 import de.curse.allround.core.cloud.servergroup.ServerGroupManager;
-import de.curse.allround.core.util.Initializeable;
-import de.curse.allround.core.util.Startable;
-import de.curse.allround.core.util.Stopable;
+import de.curse.allround.core.cloud.util.Initializeable;
+import de.curse.allround.core.cloud.util.Startable;
+import de.curse.allround.core.cloud.util.Stopable;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,7 @@ public abstract class CloudAPI implements Startable, Stopable, Initializeable {
     private final ProxyManager proxyManager;
     private final ServerManager serverManager;
     private final ServerGroupManager groupManager;
+    private final NetworkManager networkManager;
 
     @Contract(pure = true)
     public CloudAPI() {
@@ -44,23 +46,17 @@ public abstract class CloudAPI implements Startable, Stopable, Initializeable {
         this.proxyManager = new ProxyManager();
         this.serverManager = new ServerManager();
         this.groupManager = new ServerGroupManager();
+        this.networkManager = new NetworkManager();
     }
 
     @Override
     public void init(){
-        registerDefaultPacketTypes();
         registerDefaultNetworkListener();
     }
 
-    public void registerDefaultPacketTypes(){
-        PacketConverter.getInstance()
-                .registerType("MODULE_CONNECT_INFO", ModuleConnectInfo.class)
-                .registerType("MODULE_DISCONNECT_INFO", ModuleDisconnectInfo.class);
-    }
-
     public void registerDefaultNetworkListener(){
-        NetworkAPI.getInstance().getEventBus().listen("MODULE_CONNECT_INFO", PacketChannel.CLOUD,new ModuleConnectListener());
-        NetworkAPI.getInstance().getEventBus().listen("MODULE_CONNECT_INFO",PacketChannel.CLOUD,new ModuleDisconnectListener());
+        networkManager.getEventBus().listen("MODULE_CONNECT_INFO", PacketChannel.CLOUD,new ModuleConnectListener());
+        networkManager.getEventBus().listen("MODULE_CONNECT_INFO", PacketChannel.CLOUD,new ModuleDisconnectListener());
     }
 
     public abstract ExtensionManager getExtensionManager();

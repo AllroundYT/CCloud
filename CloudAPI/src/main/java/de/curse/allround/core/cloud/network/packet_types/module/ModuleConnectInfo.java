@@ -1,10 +1,10 @@
 package de.curse.allround.core.cloud.network.packet_types.module;
 
-import de.curse.allround.core.beta.network.Packet;
-import de.curse.allround.core.beta.network.PacketChannel;
-import de.curse.allround.core.beta.network.PacketType;
 import de.curse.allround.core.cloud.module.Module;
 import de.curse.allround.core.cloud.module.ModuleType;
+import de.curse.allround.core.cloud.network.packet.Packet;
+import de.curse.allround.core.cloud.network.packet.PacketChannel;
+import de.curse.allround.core.cloud.network.packet.PacketType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

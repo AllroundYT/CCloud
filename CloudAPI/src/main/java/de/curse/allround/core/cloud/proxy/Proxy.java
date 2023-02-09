@@ -3,11 +3,14 @@ package de.curse.allround.core.cloud.proxy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 public abstract class Proxy {
     private final String name;
 
+    private UUID networkId;
     private String motd;
     private int maxRam;
     private int maxPlayers;

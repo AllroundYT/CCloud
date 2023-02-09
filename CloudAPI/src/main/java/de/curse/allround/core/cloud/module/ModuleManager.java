@@ -3,7 +3,7 @@ package de.curse.allround.core.cloud.module;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisConnection;
 import com.lambdaworks.redis.RedisURI;
-import de.curse.allround.core.beta.NetworkAPI;
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
@@ -29,15 +29,15 @@ public class ModuleManager {
     private boolean mainNodeRegistered;
 
     public Optional<Module> getThisModule(){
-        return getModule(NetworkAPI.getInstance().getIdentityManager().getThisIdentity());
+        return getModule(NetworkManager.getInstance().getIdentityManager().getThisIdentity());
     }
 
     public boolean isMainNode(){
-        return mainNode.equals(NetworkAPI.getInstance().getIdentityManager().getThisIdentity());
+        return mainNode.equals(NetworkManager.getInstance().getIdentityManager().getThisIdentity());
     }
 
     public void setThisModule(String name,ModuleType moduleType){
-        addModule(new Module(moduleType,NetworkAPI.getInstance().getIdentityManager().getThisIdentity(),name));
+        addModule(new Module(moduleType,NetworkManager.getInstance().getIdentityManager().getThisIdentity(),name));
     }
 
     @Contract(pure = true)
@@ -59,7 +59,7 @@ public class ModuleManager {
         executorService.shutdownNow();
 
         ModuleDisconnectInfo disconnectInfo = new ModuleDisconnectInfo(getThisModule().get());
-        NetworkAPI.getInstance().sendPacket(disconnectInfo);
+        NetworkManager.getInstance().sendPacket(disconnectInfo);
 
         connection.close();
         redisClient.shutdown();
@@ -69,12 +69,12 @@ public class ModuleManager {
         String mainNode = connection.get("main-node-network-id");
 
         if (isMainNode()){
-            connection.setex("main-node-network-id",10000,NetworkAPI.getInstance().getIdentityManager().getThisIdentity().toString());
+            connection.setex("main-node-network-id",10000,NetworkManager.getInstance().getIdentityManager().getThisIdentity().toString());
         } else if (mainNode == null) {
             if (!mainNodeRegistered){
-                connection.set("main-node-network-id",NetworkAPI.getInstance().getIdentityManager().getThisIdentity().toString());
+                connection.set("main-node-network-id",NetworkManager.getInstance().getIdentityManager().getThisIdentity().toString());
 
-                this.mainNode = NetworkAPI.getInstance().getIdentityManager().getThisIdentity();
+                this.mainNode = NetworkManager.getInstance().getIdentityManager().getThisIdentity();
 
                 mainNodeRegistered = true;
             }

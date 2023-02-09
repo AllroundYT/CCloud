@@ -1,7 +1,7 @@
-package de.curse.allround.core.cloud.network.listener;
+package de.curse.allround.core.cloud.network.packet.listener;
 
-import de.curse.allround.core.beta.network.listener.SpecificTypePacketListener;
 import de.curse.allround.core.cloud.CloudAPI;
+import de.curse.allround.core.cloud.network.packet.listener.SpecificTypePacketListener;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 
 public class ModuleDisconnectListener implements SpecificTypePacketListener<ModuleDisconnectInfo> {
