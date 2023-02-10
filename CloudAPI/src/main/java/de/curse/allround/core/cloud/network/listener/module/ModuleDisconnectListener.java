@@ -1,4 +1,4 @@
-package de.curse.allround.core.cloud.network.packet.listener;
+package de.curse.allround.core.cloud.network.listener.module;
 
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.listener.SpecificTypePacketListener;

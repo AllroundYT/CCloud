@@ -99,7 +99,7 @@ public class EventBus {
         return listenerId;
     }
 
-    public UUID listen(String type, SpecificTypePacketListener<?> specificTypePacketListener) {
+    public UUID listenType(String type, SpecificTypePacketListener<?> specificTypePacketListener) {
         UUID listenerId = UUID.randomUUID();
         SpecificTypeListener specificTypeListener = new SpecificTypeListener(type,  listenerId, specificTypePacketListener);
         specificTypeListeners.add(specificTypeListener);
@@ -129,7 +129,7 @@ public class EventBus {
         return listenerId;
     }
 
-    public UUID listenResponse(String type,  UUID responseId, SpecificTypePacketListener<?> specificTypePacketListener) {
+    public UUID listenResponseType(String type,  UUID responseId, SpecificTypePacketListener<?> specificTypePacketListener) {
         UUID listenerId = UUID.randomUUID();
         SpecificTypeListener specificTypeListener = new SpecificTypeListener(type,  listenerId, specificTypePacketListener);
         specificTypeListener.setResponseId(responseId);

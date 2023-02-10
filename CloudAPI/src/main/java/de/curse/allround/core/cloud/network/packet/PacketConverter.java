@@ -4,6 +4,8 @@ import de.curse.allround.core.cloud.network.packet_types.module.ModuleConnectInf
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 import de.curse.allround.core.cloud.network.packet_types.player.*;
 import de.curse.allround.core.cloud.network.packet_types.proxy.*;
+import de.curse.allround.core.cloud.network.packet_types.server.*;
+import de.curse.allround.core.cloud.network.packet_types.servergroup.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,7 @@ public class PacketConverter {
     @Contract(pure = true)
     public PacketConverter() {
         this.packetTypes = new HashMap<>();
+
         /* MODULE PACKET TYPES */
         registerType("MODULE_CONNECT_INFO", ModuleConnectInfo.class);
         registerType("MODULE_DISCONNECT_INFO", ModuleDisconnectInfo.class);
@@ -47,6 +50,30 @@ public class PacketConverter {
         registerType("PROXY_STOP_REQUEST", ProxyStopRequest.class);
         registerType("PROXY_STOP_RESPONSE", ProxyStopResponse.class);
         registerType("PROXY_UPDATE_INFO", ProxyUpdateInfo.class);
+
+        /* SERVER PACKET TYPES */
+        registerType("SERVER_CREATE_INFO", ServerCreateInfo.class);
+        registerType("SERVER_DATA_REQUEST", ServerDataRequest.class);
+        registerType("SERVER_DATA_RESPONSE", ServerDataResponse.class);
+        registerType("SERVER_DELETE_INFO", ServerDeleteInfo.class);
+        registerType("SERVER_KICK_ALL_REQUEST", ServerKickAllRequest.class);
+        registerType("SERVER_KICK_ALL_RESPONSE",ServerKickAllResponse.class);
+        registerType("SERVER_LIST_REQUEST",ServerListRequest.class);
+        registerType("SERVER_LIST_RESPONSE",ServerListResponse.class);
+        registerType("SERVER_START_REQUEST",ServerStartRequest.class);
+        registerType("SERVER_START_RESPONSE",ServerStartResponse.class);
+        registerType("SERVER_STOP_REQUEST",ServerStopRequest.class);
+        registerType("SERVER_STOP_RESPONSE",ServerStopResponse.class);
+        registerType("SERVER_UPDATE_INFO",ServerUpdateInfo.class);
+
+        /* GROUP PACKET TYPES */
+        registerType("GROUP_CREATE_INFO", GroupCreateInfo.class);
+        registerType("GROUP_DATA_REQUEST", GroupDataRequest.class);
+        registerType("GROUP_DATA_RESPONSE", GroupDataResponse.class);
+        registerType("GROUP_DELETE_INFO", GroupDeleteInfo.class);
+        registerType("GROUP_LIST_REQUEST", GroupListRequest.class);
+        registerType("GROUP_LIST_RESPONSE",GroupListResponse.class);
+        registerType("GROUP_UPDATE_INFO",GroupUpdateInfo.class);
     }
 
     public static PacketConverter getInstance() {

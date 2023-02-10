@@ -1,5 +1,7 @@
 package de.curse.allround.core.cloud.servergroup;
 
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupDeleteInfo;
 import lombok.Data;
 import org.jetbrains.annotations.Contract;
 
@@ -14,6 +16,13 @@ public class ServerGroupManager {
     @Contract(pure = true)
     public ServerGroupManager() {
         this.serverGroups = new CopyOnWriteArrayList<>();
+    }
+
+    public void deleteGroup(String group){
+        if (getGroup(group).isEmpty()) return;
+        GroupDeleteInfo groupDeleteInfo = new GroupDeleteInfo(group);
+        NetworkManager.getInstance().sendPacket(groupDeleteInfo);
+        removeGroup(group);
     }
 
     public boolean addGroup(ServerGroup serverGroup){

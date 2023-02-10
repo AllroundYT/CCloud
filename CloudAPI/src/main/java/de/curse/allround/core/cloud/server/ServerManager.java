@@ -1,5 +1,7 @@
 package de.curse.allround.core.cloud.server;
 
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.server.ServerDeleteInfo;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -12,6 +14,24 @@ public class ServerManager {
     @Contract(pure = true)
     public ServerManager() {
         this.servers = new CopyOnWriteArrayList<>();
+    }
+
+    public void deleteServer(String server){
+        if (getServer(server).isEmpty()) return;
+        if (getServer(server).get().isRunning()){
+            getServer(server).get().stop().handleAsync((success, throwable) -> {
+                if (success){
+                    ServerDeleteInfo serverDeleteInfo = new ServerDeleteInfo(server);
+                    NetworkManager.getInstance().sendPacket(serverDeleteInfo);
+                    removeServer(server);
+                }
+                return success;
+            });
+        }else {
+            ServerDeleteInfo serverDeleteInfo = new ServerDeleteInfo(server);
+            NetworkManager.getInstance().sendPacket(serverDeleteInfo);
+            removeServer(server);
+        }
     }
 
     public Optional<Server> getServer(String name){

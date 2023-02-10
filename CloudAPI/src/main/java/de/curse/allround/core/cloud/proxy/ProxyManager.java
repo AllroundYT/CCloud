@@ -1,5 +1,7 @@
 package de.curse.allround.core.cloud.proxy;
 
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.proxy.ProxyDeleteInfo;
 import lombok.Data;
 import org.jetbrains.annotations.Contract;
 
@@ -14,6 +16,24 @@ public class ProxyManager {
     @Contract(pure = true)
     public ProxyManager() {
         this.proxies = new CopyOnWriteArrayList<>();
+    }
+
+    public void deleteProxy(String proxy){
+        if (getProxy(proxy).isEmpty()) return;
+        if (getProxy(proxy).get().isRunning()){
+            getProxy(proxy).get().stop().handleAsync((success, throwable) -> {
+                if (success){
+                    ProxyDeleteInfo proxyDeleteInfo = new ProxyDeleteInfo(proxy);
+                    NetworkManager.getInstance().sendPacket(proxyDeleteInfo);
+                    removeProxy(proxy);
+                }
+                return success;
+            });
+        }else {
+            ProxyDeleteInfo proxyDeleteInfo = new ProxyDeleteInfo(proxy);
+            NetworkManager.getInstance().sendPacket(proxyDeleteInfo);
+            removeProxy(proxy);
+        }
     }
 
     public Optional<Proxy> getProxy(String name){

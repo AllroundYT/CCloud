@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud.network.packet;
 
+import de.curse.allround.core.cloud.network.listener.DefaultListener;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
@@ -61,6 +62,7 @@ public class NetworkManager {
         try {
             receiver.init();
             publisher.init();
+            new DefaultListener().register();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
