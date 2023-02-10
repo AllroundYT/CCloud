@@ -17,9 +17,5 @@ Der aktuelle MainNode wird anhand seiner NetworkID, welche im die NetworkAPI zut
 in einer RedisDatenbank gespeichert und muss regelmäßig nach getragen werden. Ist dies nicht der Fall,
 wechselt der MainNode.
 
-Wenn der Serverhoster eine API hat ist es möglich mehrere VServer zu nutzen und diese nur
-dann zu starten, wenn sie gebraucht werden. Dabei würde ein Server permanent laufen
-und ein anderer Server würde gestartet/gestoppt je nach cloud auslastung.
-
 Wenn ein CloudNode disconnectet laufen die Server, welche von dem Node gesteuert wurden noch weiter,
 es können jedoch keine neuen Server auf dem VServer des Nodes gestartet werden.
