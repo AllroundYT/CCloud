@@ -2,7 +2,6 @@ package de.curse.allround.core.cloud.network.packet_types.player;
 
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.Packet;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,6 @@ public class PlayerKickRequest extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.request(CloudAPI.getInstance().getPlayerManager().getPlayer(player).get().getProxy().getNetworkId(), "PLAYER_KICK_REQUEST", PacketChannel.CLOUD,new String[]{player.toString(),reason});
+        return Packet.request(CloudAPI.getInstance().getPlayerManager().getPlayer(player).get().getProxy().getNetworkId(), "PLAYER_KICK_REQUEST", new String[]{player.toString(),reason});
     }
 }

@@ -1,7 +1,6 @@
 package de.curse.allround.core.cloud.network.packet_types.player;
 
 import de.curse.allround.core.cloud.network.packet.Packet;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,6 @@ public class PlayerDisconnectInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("PLAYER_DISCONNECT_INFO", PacketChannel.CLOUD,new String[]{player.toString()});
+        return Packet.regular("PLAYER_DISCONNECT_INFO", new String[]{player.toString()});
     }
 }

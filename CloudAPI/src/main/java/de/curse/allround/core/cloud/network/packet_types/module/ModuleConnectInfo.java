@@ -3,7 +3,6 @@ package de.curse.allround.core.cloud.network.packet_types.module;
 import de.curse.allround.core.cloud.module.Module;
 import de.curse.allround.core.cloud.module.ModuleType;
 import de.curse.allround.core.cloud.network.packet.Packet;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,6 @@ public class ModuleConnectInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("MODULE_CONNECT_INFO", PacketChannel.CLOUD,new String[]{module.getName(),module.getModuleType().name(),module.getNetworkId().toString()});
+        return Packet.regular("MODULE_CONNECT_INFO", new String[]{module.getName(),module.getModuleType().name(),module.getNetworkId().toString()});
     }
 }

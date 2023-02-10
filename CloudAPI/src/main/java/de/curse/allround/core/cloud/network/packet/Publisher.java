@@ -3,6 +3,7 @@ package de.curse.allround.core.cloud.network.packet;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import de.curse.allround.core.cloud.CloudAPI;
 import org.jetbrains.annotations.NotNull;
 
 public class Publisher {
@@ -12,15 +13,18 @@ public class Publisher {
 
     public Publisher() {
         this.connectionFactory = new ConnectionFactory();
-        connectionFactory.setConnectionTimeout(10000);
-        connectionFactory.setHost("localhost");
     }
 
     public void init() throws Exception {
+        connectionFactory.setConnectionTimeout(CloudAPI.getInstance().getConfiguration().getRabbitMQConnectionTimeout());
+        connectionFactory.setHost(CloudAPI.getInstance().getConfiguration().getRabbitMQHost());
+        connectionFactory.setUsername(CloudAPI.getInstance().getConfiguration().getRabbitMQUser());
+        connectionFactory.setPassword(CloudAPI.getInstance().getConfiguration().getRabbitMQPassword());
+        connectionFactory.setPort(CloudAPI.getInstance().getConfiguration().getRabbitMQPort());
+
         try (Connection connection = connectionFactory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.queueDeclare(PacketChannel.CORE.name(), false, false, false, null);
-            channel.queueDeclare(PacketChannel.CLOUD.name(), false, false, false, null);
+            channel.exchangeDeclare("CLOUD","fanout");
         }
         initialized = true;
     }
@@ -29,7 +33,7 @@ public class Publisher {
         if (!initialized) init();
         try (Connection connection = connectionFactory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.basicPublish("", packet.getChannel().name(), null, Packet.serialize(packet));
+            channel.basicPublish("CLOUD", "", null, Packet.serialize(packet));
         }
     }
 }

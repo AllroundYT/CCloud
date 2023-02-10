@@ -2,7 +2,6 @@ package de.curse.allround.core.cloud.network.packet_types.player;
 
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.Packet;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.server.Server;
 import lombok.Getter;
@@ -23,6 +22,6 @@ public class PlayerSwitchServerInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("PLAYER_SWITCH_SERVER_INFO", PacketChannel.CLOUD,new String[]{player.toString(),server.getName()});
+        return Packet.regular("PLAYER_SWITCH_SERVER_INFO", new String[]{player.toString(),server.getName()});
     }
 }

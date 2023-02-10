@@ -3,9 +3,11 @@ package de.curse.allround.core.cloud.module;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisConnection;
 import com.lambdaworks.redis.RedisURI;
+import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -18,47 +20,48 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 public class ModuleManager {
     private final List<Module> modules;
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+    private final Module thisModule;
+    private final ScheduledExecutorService executorService;
     private RedisClient redisClient;
-    private RedisConnection<String,String> connection;
-    private final String redisHost = "localhost";
-    private final int redisPort = 5555;
+    private RedisConnection<String, String> connection;
     private UUID mainNode;
     private boolean mainNodeRegistered;
 
-    public Optional<Module> getThisModule(){
-        return getModule(NetworkManager.getInstance().getIdentityManager().getThisIdentity());
-    }
-
-    public boolean isMainNode(){
-        return mainNode.equals(NetworkManager.getInstance().getIdentityManager().getThisIdentity());
-    }
-
-    public void setThisModule(String name,ModuleType moduleType){
-        addModule(new Module(moduleType,NetworkManager.getInstance().getIdentityManager().getThisIdentity(),name));
-    }
-
     @Contract(pure = true)
-    public ModuleManager() {
+    public ModuleManager(Module module) {
+        thisModule = module;
         this.modules = new CopyOnWriteArrayList<>();
+        this.executorService = Executors.newScheduledThreadPool(1);
     }
 
-    private void init() {
-        redisClient = new RedisClient(RedisURI.create("redis://password@host:port"));
-        connection = redisClient.connect();
+    public Module getThisModule() {
+        return thisModule;
     }
+
+    public boolean isMainNode() {
+        return mainNode.equals(thisModule.getNetworkId());
+    }
+
+    public void setThisModule(String name, ModuleType moduleType) {
+        addModule(new Module(moduleType, thisModule.getNetworkId(), name));
+    }
+
+
 
     public void start() {
-        init();
+        redisClient = new RedisClient(RedisURI.create("redis://"+ CloudAPI.getInstance().getConfiguration().getRedisPassword() +"@"+CloudAPI.getInstance().getConfiguration().getRedisHost()+":"+CloudAPI.getInstance().getConfiguration().getRedisPort()));
+        redisClient.setDefaultTimeout(CloudAPI.getInstance().getConfiguration().getRedisDefaultTimeout(),TimeUnit.MILLISECONDS);
+        connection = redisClient.connect();
         executorService.scheduleWithFixedDelay(this::update, 0, 1, TimeUnit.MINUTES);
     }
 
     public void stop() {
         executorService.shutdownNow();
 
-        ModuleDisconnectInfo disconnectInfo = new ModuleDisconnectInfo(getThisModule().get());
+        ModuleDisconnectInfo disconnectInfo = new ModuleDisconnectInfo(thisModule);
         NetworkManager.getInstance().sendPacket(disconnectInfo);
 
         connection.close();
@@ -68,18 +71,18 @@ public class ModuleManager {
     public void update() {
         String mainNode = connection.get("main-node-network-id");
 
-        if (isMainNode()){
-            connection.setex("main-node-network-id",10000,NetworkManager.getInstance().getIdentityManager().getThisIdentity().toString());
+        if (isMainNode()) {
+            connection.setex("main-node-network-id", 60, thisModule.getNetworkId().toString());
         } else if (mainNode == null) {
-            if (!mainNodeRegistered){
-                connection.set("main-node-network-id",NetworkManager.getInstance().getIdentityManager().getThisIdentity().toString());
+            if (!mainNodeRegistered) {
+                connection.set("main-node-network-id", thisModule.getNetworkId().toString());
 
-                this.mainNode = NetworkManager.getInstance().getIdentityManager().getThisIdentity();
+                this.mainNode = thisModule.getNetworkId();
 
                 mainNodeRegistered = true;
             }
             mainNodeRegistered = false;
-        }else {
+        } else {
             this.mainNode = UUID.fromString(mainNode);
             mainNodeRegistered = true;
         }
@@ -96,16 +99,13 @@ public class ModuleManager {
         return modules.stream().filter(module -> module.getName().equals(name)).collect(Collectors.toList());
     }
 
-    public Optional<Module> getModule(UUID networkId) {
+    public Optional<Module> getThisModule(UUID networkId) {
         return modules.stream().filter(module -> module.getNetworkId().equals(networkId)).findFirst();
     }
 
-    public List<Module> getDaemons() {
-        return modules.stream().filter(module -> module.getModuleType().equals(ModuleType.DAEMON)).collect(Collectors.toList());
-    }
 
-    public Optional<Module> getController() {
-        return modules.stream().filter(module -> module.getModuleType().equals(ModuleType.CONTROLLER)).findFirst();
+    public Optional<Module> getNodes() {
+        return modules.stream().filter(module -> module.getModuleType().equals(ModuleType.NODE)).findFirst();
     }
 
     public List<Module> getServers() {

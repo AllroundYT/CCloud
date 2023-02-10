@@ -1,6 +1,6 @@
 package de.curse.allround.core.cloud.extension;
 
-import de.curse.allround.core.util.JsonUtil;
+import de.curse.allround.core.cloud.util.JsonUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class ExtensionManager {
 
-    private final List<ExtensionInfo> extensionInfos;
+    protected final List<ExtensionInfo> extensionInfos;
 
     @Contract(pure = true)
     public ExtensionManager() {
@@ -36,26 +37,29 @@ public abstract class ExtensionManager {
 
     public abstract void scanForExtensions();
 
-    public void loadAll(){
+    public void loadAll(Consumer<ExtensionInfo> consumer){
         extensionInfos.forEach(extensionInfo -> {
             try {
                 loadExtension(extensionInfo);
+                consumer.accept(extensionInfo);
             } catch (ExtensionException ignored) {}
         });
     }
 
-    public void enableAll(){
+    public void enableAll(Consumer<ExtensionInfo> consumer){
         extensionInfos.forEach(extensionInfo -> {
             try {
                 enableExtension(extensionInfo);
+                consumer.accept(extensionInfo);
             } catch (ExtensionException ignored) {}
         });
     }
 
-    public void disableAll(){
+    public void disableAll(Consumer<ExtensionInfo> consumer){
         extensionInfos.forEach(extensionInfo -> {
             try {
                 disableExtension(extensionInfo);
+                consumer.accept(extensionInfo);
             } catch (ExtensionException ignored) {}
         });
     }

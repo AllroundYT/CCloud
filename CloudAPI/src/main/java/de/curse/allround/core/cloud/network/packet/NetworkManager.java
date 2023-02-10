@@ -1,6 +1,5 @@
 package de.curse.allround.core.cloud.network.packet;
 
-import de.curse.allround.core.cloud.network.identity.IdentityManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
@@ -18,8 +17,6 @@ public class NetworkManager {
     }
 
     @Getter
-    private final IdentityManager identityManager;
-    @Getter
     private final EventBus eventBus;
     @Getter(AccessLevel.PRIVATE)
     private final Publisher publisher;
@@ -29,7 +26,6 @@ public class NetworkManager {
     @Contract(pure = true)
     public NetworkManager() {
         NetworkManager.instance = this;
-        this.identityManager = new IdentityManager();
         this.eventBus = new EventBus();
         this.publisher = new Publisher();
         this.receiver = new Receiver();

@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,26 +22,29 @@ public class Receiver {
         connectionFactory.setHost("localhost");
     }
 
-    public void init() throws Exception {
-        connection = connectionFactory.newConnection();
-        Channel channel = connection.createChannel();
-        channel.queueDeclare(PacketChannel.CORE.name(), false, false, false, null);
-        channel.queueDeclare(PacketChannel.CLOUD.name(), false, false, false, null);
-
+    public void init() {
         executorService.submit(() -> {
-            while (connection.isOpen()) {
-                DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                    NetworkManager.getInstance().getEventBus().onPacket(Packet.deserialize(delivery.getBody()));
-                };
+            try {
+                connection = connectionFactory.newConnection();
+                Channel channel = connection.createChannel();
+                channel.exchangeDeclare("CLOUD", "fanout");
 
-                try {
-                    channel.basicConsume(PacketChannel.CORE.name(), true, deliverCallback, s -> {
-                    });
-                    channel.basicConsume(PacketChannel.CLOUD.name(), true, deliverCallback, s -> {
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String queue = channel.queueDeclare().getQueue();
+                channel.queueBind(queue, "CLOUD", "");
+                while (connection.isOpen()) {
+                    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                        NetworkManager.getInstance().getEventBus().onPacket(Objects.requireNonNull(Packet.deserialize(delivery.getBody())));
+                    };
+
+                    try {
+                        channel.basicConsume(queue, true, deliverCallback, s -> {
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         });
     }

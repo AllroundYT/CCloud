@@ -1,7 +1,6 @@
 package de.curse.allround.core.cloud.network.packet_types.player;
 
 import de.curse.allround.core.cloud.network.packet.Packet;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,6 @@ public class PlayerKickResponse extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.response(responseId,"PLAYER_KICK_RESPONSE", PacketChannel.CLOUD,new String[]{result});
+        return Packet.response(responseId,"PLAYER_KICK_RESPONSE", new String[]{result});
     }
 }

@@ -31,6 +31,30 @@ public class Document {
         this.read(path);
     }
 
+    public String getString(String key){
+        return get(key,String.class);
+    }
+
+    public int getInteger(String key){
+        return get(key,int.class);
+    }
+
+    public boolean getBoolean(String key){
+        return get(key,boolean.class);
+    }
+
+    public double getDouble(String key){
+        return get(key,double.class);
+    }
+
+    public float getFloat(String key){
+        return get(key,float.class);
+    }
+
+    public long getLong(String key){
+        return get(key,long.class);
+    }
+
     public Document(final @NotNull Reader reader) {
         this.read(reader);
     }

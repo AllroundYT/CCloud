@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud.network.packet;
 
+import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.util.JsonUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,50 +14,47 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Packet {
-    private final UUID sender = NetworkManager.getInstance().getIdentityManager().getThisIdentity();
+    private final UUID sender = CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId();
     private final long timestamp = System.currentTimeMillis();
     private final String type;
-    private final PacketChannel channel;
     private final String[] data;
     private UUID requestId;
     private UUID responseId;
     private UUID receiver;
 
-    private Packet(String type, PacketChannel channel, String[] data) {
+    private Packet(String type, String[] data) {
         this.type = type;
-        this.channel = channel;
         this.data = data;
     }
 
-    private Packet(UUID receiver, String type, PacketChannel channel, String[] data) {
+    private Packet(UUID receiver, String type, String[] data) {
         this.receiver = receiver;
         this.type = type;
-        this.channel = channel;
         this.data = data;
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull Packet regular(String type,  String... data) {
+        return new Packet(type,  data);
     }
 
     @Contract("_, _, _ -> new")
-    public static @NotNull Packet regular(String type, PacketChannel channel, String[] data) {
-        return new Packet(type, channel, data);
-    }
-
-    @Contract("_, _, _, _ -> new")
-    public static @NotNull Packet request(UUID receiver, String type, PacketChannel channel, String[] data) {
-        Packet packet = new Packet(receiver, type, channel, data);
+    public static @NotNull Packet request(UUID receiver, String type,  String... data) {
+        Packet packet = new Packet(receiver, type, data);
         packet.setRequestId(UUID.randomUUID());
         return packet;
     }
 
-    @Contract("_, _, _, _ -> new")
-    public static @NotNull Packet response(UUID responseId, String type, PacketChannel channel, String[] data) {
-        Packet packet = new Packet(type, channel, data);
+    @Contract("_, _, _ -> new")
+    public static @NotNull Packet response(UUID responseId, String type,  String... data) {
+        Packet packet = new Packet(type,  data);
         packet.setResponseId(responseId);
         return packet;
     }
 
-    @Contract("_, _, _, _ -> new")
-    public static @NotNull Packet addressed(UUID receiver, String type, PacketChannel channel, String[] data) {
-        return new Packet(receiver, type, channel, data);
+    @Contract("_, _, _ -> new")
+    public static @NotNull Packet addressed(UUID receiver, String type,  String... data) {
+        return new Packet(receiver, type,  data);
     }
 
     @Contract(pure = true)

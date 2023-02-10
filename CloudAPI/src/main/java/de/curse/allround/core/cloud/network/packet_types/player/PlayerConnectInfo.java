@@ -2,7 +2,6 @@ package de.curse.allround.core.cloud.network.packet_types.player;
 
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.Packet;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.player.Player;
 import de.curse.allround.core.cloud.player.PlayerSnapshot;
@@ -31,6 +30,6 @@ public class PlayerConnectInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("PLAYER_CONNECT_INFO", PacketChannel.CLOUD,new String[]{player.getUuid().toString(),player.getServer().getName(),player.getProxy().getName()});
+        return Packet.regular("PLAYER_CONNECT_INFO", new String[]{player.getUuid().toString(),player.getServer().getName(),player.getProxy().getName()});
     }
 }

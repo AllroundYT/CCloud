@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Data
 @AllArgsConstructor
 public abstract class Proxy {
     private final String name;
 
+    private UUID node;
     private UUID networkId;
     private String motd;
     private int maxRam;
@@ -18,7 +20,8 @@ public abstract class Proxy {
     private String status;
     private String host;
     private int port;
+    private boolean running;
 
-    public abstract void start();
-    public abstract void stop();
+    public abstract CompletableFuture<Boolean> start();
+    public abstract CompletableFuture<Boolean> stop();
 }

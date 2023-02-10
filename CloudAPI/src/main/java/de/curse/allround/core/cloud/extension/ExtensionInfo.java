@@ -7,6 +7,7 @@ import java.nio.file.Path;
 
 @Data
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Accessors(fluent = true)
 public class ExtensionInfo {
     private final Path jarFile;

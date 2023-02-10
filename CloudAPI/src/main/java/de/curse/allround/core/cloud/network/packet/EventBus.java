@@ -1,6 +1,7 @@
 package de.curse.allround.core.cloud.network.packet;
 
 
+import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.listener.PacketListener;
 import de.curse.allround.core.cloud.network.packet.listener.SimplePacketListener;
 import de.curse.allround.core.cloud.network.packet.listener.SpecificTypePacketListener;
@@ -53,56 +54,54 @@ public class EventBus {
         if (packet.getResponseId() != null){
             CompletableFuture<Packet> future = getRequestFuture(packet.getResponseId());
             if (future != null){
-                future.complete(packet);
+                future.completeAsync(() -> packet);
                 removeRequestFuture(packet.getResponseId());
             }
         }
 
         listeners.forEach(listener -> {
-            if (packet.isAddressed() && !NetworkManager.getInstance().getIdentityManager().getThisIdentity().equals(packet.getReceiver()))
+            if (packet.isAddressed() && !CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId().equals(packet.getReceiver()))
                 return;
             if (listener.getResponseId() != null && packet.isResponse() && !listener.getResponseId().equals(packet.getResponseId()))
                 return;
 
-            listener.packetListener.listen(packet.getType(), packet.getChannel(), packet);
+            listener.packetListener.listen(packet.getType(), packet);
         });
 
         simpleListeners.forEach(listener -> {
-            if (packet.isAddressed() && !NetworkManager.getInstance().getIdentityManager().getThisIdentity().equals(packet.getReceiver()))
+            if (packet.isAddressed() && !CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId().equals(packet.getReceiver()))
                 return;
             if (listener.getResponseId() != null && packet.isResponse() && !listener.getResponseId().equals(packet.getResponseId()))
                 return;
 
             if (!listener.getType().equals(packet.getType())) return;
-            if (!listener.getChannel().equals(packet.getChannel())) return;
 
             listener.getSimplePacketListener().listen(packet);
         });
 
         specificTypeListeners.forEach(listener -> {
-            if (packet.isAddressed() && !NetworkManager.getInstance().getIdentityManager().getThisIdentity().equals(packet.getReceiver()))
+            if (packet.isAddressed() && !CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId().equals(packet.getReceiver()))
                 return;
             if (!PacketConverter.getInstance().isConvertable(packet)) return;
             if (listener.getResponseId() != null && packet.isResponse() && !listener.getResponseId().equals(packet.getResponseId()))
                 return;
 
             if (!listener.getType().equals(packet.getType())) return;
-            if (!listener.getChannel().equals(packet.getChannel())) return;
 
             listener.getSpecificTypePacketListener().listen(PacketConverter.getInstance().convert(packet));
         });
     }
 
-    public UUID listen(String type, PacketChannel channel, SimplePacketListener simplePacketListener) {
+    public UUID listen(String type, SimplePacketListener simplePacketListener) {
         UUID listenerId = UUID.randomUUID();
-        SimpleListener simpleListener = new SimpleListener(type, channel, listenerId, simplePacketListener);
+        SimpleListener simpleListener = new SimpleListener(type,  listenerId, simplePacketListener);
         this.simpleListeners.add(simpleListener);
         return listenerId;
     }
 
-    public UUID listen(String type, PacketChannel channel, SpecificTypePacketListener<?> specificTypePacketListener) {
+    public UUID listen(String type, SpecificTypePacketListener<?> specificTypePacketListener) {
         UUID listenerId = UUID.randomUUID();
-        SpecificTypeListener specificTypeListener = new SpecificTypeListener(type, channel, listenerId, specificTypePacketListener);
+        SpecificTypeListener specificTypeListener = new SpecificTypeListener(type,  listenerId, specificTypePacketListener);
         specificTypeListeners.add(specificTypeListener);
         return listenerId;
     }
@@ -122,17 +121,17 @@ public class EventBus {
         return listenerId;
     }
 
-    public UUID listenResponse(String type, PacketChannel channel, UUID responseId, SimplePacketListener simplePacketListener) {
+    public UUID listenResponse(String type,  UUID responseId, SimplePacketListener simplePacketListener) {
         UUID listenerId = UUID.randomUUID();
-        SimpleListener simpleListener = new SimpleListener(type, channel, listenerId, simplePacketListener);
+        SimpleListener simpleListener = new SimpleListener(type,  listenerId, simplePacketListener);
         simpleListener.setResponseId(responseId);
         this.simpleListeners.add(simpleListener);
         return listenerId;
     }
 
-    public UUID listenResponse(String type, PacketChannel channel, UUID responseId, SpecificTypePacketListener<?> specificTypePacketListener) {
+    public UUID listenResponse(String type,  UUID responseId, SpecificTypePacketListener<?> specificTypePacketListener) {
         UUID listenerId = UUID.randomUUID();
-        SpecificTypeListener specificTypeListener = new SpecificTypeListener(type, channel, listenerId, specificTypePacketListener);
+        SpecificTypeListener specificTypeListener = new SpecificTypeListener(type,  listenerId, specificTypePacketListener);
         specificTypeListener.setResponseId(responseId);
         specificTypeListeners.add(specificTypeListener);
         return listenerId;
@@ -155,7 +154,6 @@ public class EventBus {
     @Data
     private static class SimpleListener {
         private final String type;
-        private final PacketChannel channel;
         private final UUID uuid;
         private final SimplePacketListener simplePacketListener;
 
@@ -165,7 +163,6 @@ public class EventBus {
     @Data
     private static class SpecificTypeListener {
         private final String type;
-        private final PacketChannel channel;
         private final UUID uuid;
         private final SpecificTypePacketListener<?> specificTypePacketListener;
         private UUID responseId;

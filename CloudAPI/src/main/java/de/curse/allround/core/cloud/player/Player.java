@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public abstract class Player {
         return server != null && proxy != null;
     }
 
-    public abstract void send(Server server);
-    public abstract void sendMessage(String msg);
-    public abstract void kick(String reason);
+    public abstract CompletableFuture<Boolean> send(Server server);
+    public abstract CompletableFuture<Boolean> sendMessage(String msg);
+    public abstract CompletableFuture<Boolean> kick(String reason);
 }

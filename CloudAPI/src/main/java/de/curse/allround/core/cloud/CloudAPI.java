@@ -1,15 +1,10 @@
 package de.curse.allround.core.cloud;
 
 
+import de.curse.allround.core.cloud.config.CloudConfiguration;
 import de.curse.allround.core.cloud.extension.ExtensionManager;
 import de.curse.allround.core.cloud.module.ModuleManager;
-import de.curse.allround.core.cloud.network.packet.listener.ModuleConnectListener;
-import de.curse.allround.core.cloud.network.packet.listener.ModuleDisconnectListener;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
-import de.curse.allround.core.cloud.network.packet.PacketChannel;
-import de.curse.allround.core.cloud.network.packet.PacketConverter;
-import de.curse.allround.core.cloud.network.packet_types.module.ModuleConnectInfo;
-import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 import de.curse.allround.core.cloud.player.PlayerManager;
 import de.curse.allround.core.cloud.proxy.ProxyManager;
 import de.curse.allround.core.cloud.server.ServerManager;
@@ -28,36 +23,30 @@ import org.jetbrains.annotations.NotNull;
 public abstract class CloudAPI implements Startable, Stopable, Initializeable {
     private static CloudAPI instance;
 
-    private final ModuleManager moduleManager;
-    private final PlayerManager playerManager;
-    private final ProxyManager proxyManager;
-    private final ServerManager serverManager;
-    private final ServerGroupManager groupManager;
-    private final NetworkManager networkManager;
-
     @Contract(pure = true)
     public CloudAPI() {
         if (CloudAPI.instance != null) {
             throw new RuntimeException("CloudAPI can only be initialized once.");
         }
         CloudAPI.instance = this;
-        this.moduleManager = new ModuleManager();
-        this.playerManager = new PlayerManager();
-        this.proxyManager = new ProxyManager();
-        this.serverManager = new ServerManager();
-        this.groupManager = new ServerGroupManager();
-        this.networkManager = new NetworkManager();
     }
+
+    public abstract PlayerManager getPlayerManager();
+
+    public abstract ServerManager getServerManager();
+
+    public abstract NetworkManager getNetworkManager();
+
+    public abstract ProxyManager getProxyManager();
+
+    public abstract ServerGroupManager getServerGroupManager();
+
+    public abstract ModuleManager getModuleManager();
+    
+    public abstract CloudConfiguration getConfiguration();
 
     @Override
-    public void init(){
-        registerDefaultNetworkListener();
-    }
-
-    public void registerDefaultNetworkListener(){
-        networkManager.getEventBus().listen("MODULE_CONNECT_INFO", PacketChannel.CLOUD,new ModuleConnectListener());
-        networkManager.getEventBus().listen("MODULE_CONNECT_INFO", PacketChannel.CLOUD,new ModuleDisconnectListener());
-    }
+    public abstract void init();
 
     public abstract ExtensionManager getExtensionManager();
 
