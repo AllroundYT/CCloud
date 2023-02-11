@@ -21,6 +21,8 @@ public class NodePlayer extends Player{
             PlayerSendResponse playerSendResponse = PacketConverter.getInstance().convert(packet);
             if (playerSendResponse.getResult().equalsIgnoreCase("SUCCESS")){
                 setServer(server);
+                PlayerSwitchServerInfo playerSwitchServerInfo = new PlayerSwitchServerInfo(getUuid(),getServer());
+                NetworkManager.getInstance().sendPacket(playerSwitchServerInfo);
                 return true;
             }
             return false;
@@ -44,6 +46,8 @@ public class NodePlayer extends Player{
             if (playerKickResponse.getResult().equalsIgnoreCase("SUCCESS")){
                 setServer(null);
                 setProxy(null);
+                PlayerDisconnectInfo playerDisconnectInfo = new PlayerDisconnectInfo(getUuid());
+                NetworkManager.getInstance().sendPacket(playerDisconnectInfo);
                 return true;
             }
             return false;

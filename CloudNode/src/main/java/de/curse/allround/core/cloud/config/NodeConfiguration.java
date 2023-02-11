@@ -5,7 +5,7 @@ import de.curse.allround.core.cloud.util.Document;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class CloudConfiguration extends Document {
+public class NodeConfiguration extends Document {
 
     public void load(Path path){
         try {
@@ -68,4 +68,5 @@ public class CloudConfiguration extends Document {
     public long getRedisDefaultTimeout() {
         return getLong("redis-default-timeout");
     }
+
 }

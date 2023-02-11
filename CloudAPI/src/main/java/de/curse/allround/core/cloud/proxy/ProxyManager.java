@@ -12,9 +12,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Data
 public class ProxyManager {
     private final List<Proxy> proxies;
-
+    private final Class<? extends Proxy> proxyImplClass;
     @Contract(pure = true)
-    public ProxyManager() {
+    public ProxyManager(Class<? extends Proxy> proxyImplClass) {
+        this.proxyImplClass = proxyImplClass;
         this.proxies = new CopyOnWriteArrayList<>();
     }
 

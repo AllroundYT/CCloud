@@ -1,14 +1,19 @@
 package de.curse.allround.core.cloud;
 
-import de.curse.allround.core.cloud.config.CloudConfiguration;
+import de.curse.allround.core.cloud.config.NodeConfiguration;
 import de.curse.allround.core.cloud.extension.ExtensionManager;
 import de.curse.allround.core.cloud.extension.NodeExtensionManager;
 import de.curse.allround.core.cloud.module.Module;
 import de.curse.allround.core.cloud.module.ModuleManager;
 import de.curse.allround.core.cloud.module.ModuleType;
+import de.curse.allround.core.cloud.module.NodeModuleManager;
+import de.curse.allround.core.cloud.network.NodeNetworkManager;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.player.NodePlayer;
 import de.curse.allround.core.cloud.player.PlayerManager;
+import de.curse.allround.core.cloud.proxy.NodeProxy;
 import de.curse.allround.core.cloud.proxy.ProxyManager;
+import de.curse.allround.core.cloud.server.NodeServer;
 import de.curse.allround.core.cloud.server.ServerManager;
 import de.curse.allround.core.cloud.servergroup.NodeGroupManager;
 import de.curse.allround.core.cloud.servergroup.ServerGroupManager;
@@ -39,16 +44,16 @@ public class CloudNode extends CloudAPI{
     private final ProxyManager proxyManager;
     private final PlayerManager playerManager;
     private final NetworkManager networkManager;
-    private final CloudConfiguration cloudConfiguration;
+    private final NodeConfiguration nodeConfiguration;
     public CloudNode() {
-        this.moduleManager = new ModuleManager(new Module(ModuleType.NODE, UUID.randomUUID(),"Node"));
+        this.moduleManager = new NodeModuleManager(new Module(ModuleType.NODE, UUID.randomUUID(),"Node"));
         this.extensionManager = new NodeExtensionManager();
-        this.serverManager = new ServerManager();
+        this.serverManager = new ServerManager(NodeServer.class);
         this.serverGroupManager = new NodeGroupManager();
-        this.proxyManager = new ProxyManager();
-        this.playerManager = new PlayerManager();
-        this.networkManager = new NetworkManager();
-        this.cloudConfiguration = new CloudConfiguration();
+        this.proxyManager = new ProxyManager(NodeProxy.class);
+        this.playerManager = new PlayerManager(NodePlayer.class);
+        this.networkManager = new NodeNetworkManager();
+        this.nodeConfiguration = new NodeConfiguration();
     }
 
     @Override
@@ -81,9 +86,9 @@ public class CloudNode extends CloudAPI{
         return moduleManager;
     }
 
-    @Override
-    public CloudConfiguration getConfiguration() {
-        return cloudConfiguration;
+
+    public NodeConfiguration getConfiguration() {
+        return nodeConfiguration;
     }
 
     @Override
@@ -117,7 +122,7 @@ public class CloudNode extends CloudAPI{
         LOGGER.info("LOGO HERE");
         LOGGER.info("CloudNode starting...");
 
-        getModuleManager().start();
+        ((NodeModuleManager)getModuleManager()).start();
         getNetworkManager().start();
         ((NodeGroupManager) getServerGroupManager()).start();
 
@@ -148,7 +153,7 @@ public class CloudNode extends CloudAPI{
         }
 
         getNetworkManager().stop();
-        getModuleManager().stop();
+        ((NodeModuleManager)getModuleManager()).stop();
 
         LOGGER.info("CloudNode stopped in "+Duration.between(stop,Instant.now()).toMillis()+" ms. Have a nice day...");
     }

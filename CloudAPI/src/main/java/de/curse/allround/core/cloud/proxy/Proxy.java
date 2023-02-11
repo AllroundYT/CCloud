@@ -2,12 +2,14 @@ package de.curse.allround.core.cloud.proxy;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Data
 @AllArgsConstructor
+@RequiredArgsConstructor
 public abstract class Proxy {
     private final String name;
 

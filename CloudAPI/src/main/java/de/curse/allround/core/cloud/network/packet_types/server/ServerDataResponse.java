@@ -31,7 +31,7 @@ public class ServerDataResponse extends PacketType {
         int port = Integer.parseInt(packet.getData()[8]);
         boolean running = Boolean.parseBoolean(packet.getData()[9]);
 
-        server = new ServerSnapshot(name, node, networkId, status, serverGroup, maintenance, joinPermissions, host, port, running);
+        server = CloudAPI.getInstance().getServerManager().getServerImplClass().cast(new ServerSnapshot(name, node, networkId, status, serverGroup, maintenance, joinPermissions, host, port, running));
     }
 
     @Override

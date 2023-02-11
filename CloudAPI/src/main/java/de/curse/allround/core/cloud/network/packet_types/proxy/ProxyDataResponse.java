@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud.network.packet_types.proxy;
 
+import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.Packet;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.proxy.Proxy;
@@ -32,7 +33,7 @@ public class ProxyDataResponse extends PacketType {
         int port = Integer.parseInt(packet.getData()[9]);
         boolean running = Boolean.parseBoolean(packet.getData()[10]);
 
-        this.proxy = new ProxySnapshot(name,node,networkId,motd,maxRam,maxPlayers,maintenance,status,host,port,running);
+        this.proxy = CloudAPI.getInstance().getProxyManager().getProxyImplClass().cast(new ProxySnapshot(name,node,networkId,motd,maxRam,maxPlayers,maintenance,status,host,port,running));
     }
 
     @Override

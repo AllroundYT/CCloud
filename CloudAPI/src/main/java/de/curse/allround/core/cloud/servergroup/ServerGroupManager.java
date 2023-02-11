@@ -12,9 +12,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Data
 public class ServerGroupManager {
     private final List<ServerGroup> serverGroups;
+    private final Class<? extends ServerGroup> groupImplClass;
 
     @Contract(pure = true)
-    public ServerGroupManager() {
+    public ServerGroupManager(Class<? extends ServerGroup> groupImplClass) {
+        this.groupImplClass = groupImplClass;
         this.serverGroups = new CopyOnWriteArrayList<>();
     }
 

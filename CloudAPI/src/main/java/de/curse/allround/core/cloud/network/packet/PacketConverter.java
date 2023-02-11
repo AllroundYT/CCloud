@@ -2,6 +2,8 @@ package de.curse.allround.core.cloud.network.packet;
 
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleConnectInfo;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
+import de.curse.allround.core.cloud.network.packet_types.module.ModuleMetricsRequest;
+import de.curse.allround.core.cloud.network.packet_types.module.ModuleMetricsResponse;
 import de.curse.allround.core.cloud.network.packet_types.player.*;
 import de.curse.allround.core.cloud.network.packet_types.proxy.*;
 import de.curse.allround.core.cloud.network.packet_types.server.*;
@@ -22,6 +24,8 @@ public class PacketConverter {
         /* MODULE PACKET TYPES */
         registerType("MODULE_CONNECT_INFO", ModuleConnectInfo.class);
         registerType("MODULE_DISCONNECT_INFO", ModuleDisconnectInfo.class);
+        registerType("MODULE_METRICS_REQUEST", ModuleMetricsRequest.class);
+        registerType("MODULE_METRICS_RESPONSE", ModuleMetricsResponse.class);
 
         /* PLAYER PACKET TYPES */
         registerType("PLAYER_CONNECT_INFO", PlayerConnectInfo.class);

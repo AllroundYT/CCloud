@@ -1,7 +1,6 @@
 package de.curse.allround.core.cloud;
 
 
-import de.curse.allround.core.cloud.config.CloudConfiguration;
 import de.curse.allround.core.cloud.extension.ExtensionManager;
 import de.curse.allround.core.cloud.module.ModuleManager;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
@@ -42,8 +41,6 @@ public abstract class CloudAPI implements Startable, Stopable, Initializeable {
     public abstract ServerGroupManager getServerGroupManager();
 
     public abstract ModuleManager getModuleManager();
-    
-    public abstract CloudConfiguration getConfiguration();
 
     @Override
     public abstract void init();

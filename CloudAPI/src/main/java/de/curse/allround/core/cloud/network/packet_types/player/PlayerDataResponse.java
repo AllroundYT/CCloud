@@ -25,7 +25,7 @@ public class PlayerDataResponse extends PacketType {
         UUID playerId = UUID.fromString(packet.getData()[0]);
         Server server = CloudAPI.getInstance().getServerManager().getServer(packet.getData()[1]).orElse(null);
         Proxy proxy = CloudAPI.getInstance().getProxyManager().getProxy(packet.getData()[2]).orElse(null);
-        this.player = new PlayerSnapshot(playerId, server, proxy);
+        this.player = CloudAPI.getInstance().getPlayerManager().getPlayerImplClass().cast(new PlayerSnapshot(playerId, server, proxy));
     }
 
     @Override

@@ -16,6 +16,10 @@ public class NodeServer extends Server {
         super(name, node, networkId, status, serverGroup, maintenance, joinPermissions, host, port, running);
     }
 
+    public NodeServer(String name,ServerGroup serverGroup) {
+        super(name,serverGroup);
+    }
+
     @Override
     public CompletableFuture<Boolean> start(StartConfiguration startConfiguration) {
         ServerStartRequest serverStartRequest = new ServerStartRequest(getName());

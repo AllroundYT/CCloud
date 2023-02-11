@@ -25,7 +25,7 @@ public class PlayerConnectInfo extends PacketType {
         Server server = CloudAPI.getInstance().getServerManager().getServer(packet.getData()[1]).orElse(null);
         Proxy proxy = CloudAPI.getInstance().getProxyManager().getProxy(packet.getData()[2]).orElse(null);
 
-        player = new PlayerSnapshot(uuid,server,proxy);
+        this.player = CloudAPI.getInstance().getPlayerManager().getPlayerImplClass().cast(new PlayerSnapshot(uuid,server,proxy));
     }
 
     @Override

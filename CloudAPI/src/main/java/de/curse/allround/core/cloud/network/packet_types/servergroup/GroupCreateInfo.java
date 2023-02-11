@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud.network.packet_types.servergroup;
 
+import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.Packet;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.server.StartConfiguration;
@@ -26,7 +27,7 @@ public class GroupCreateInfo extends PacketType {
         Set<String> ignoredState = new HashSet<>(Arrays.asList(JsonUtil.GSON.fromJson(packet.getData()[3], String[].class)));
         StartConfiguration defaultStartConfiguration = JsonUtil.GSON.fromJson(packet.getData()[4], StartConfiguration.class);
 
-        serverGroup = new ServerGroupSnapshot(name, minServers, maxServers, ignoredState, defaultStartConfiguration);
+        serverGroup = CloudAPI.getInstance().getServerGroupManager().getGroupImplClass().cast(new ServerGroupSnapshot(name, minServers, maxServers, ignoredState, defaultStartConfiguration));
     }
 
     @Override

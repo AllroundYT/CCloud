@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 @Data
 public class PlayerManager {
     private final List<Player> players;
+    private final Class<? extends Player> playerImplClass;
 
     @Contract(pure = true)
-    public PlayerManager() {
+    public PlayerManager(Class<? extends Player> playerImplClass) {
+        this.playerImplClass = playerImplClass;
         this.players = new CopyOnWriteArrayList<>();
     }
 

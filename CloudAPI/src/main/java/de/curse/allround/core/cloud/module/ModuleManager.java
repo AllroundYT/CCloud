@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,19 +23,21 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class ModuleManager {
-    private final List<Module> modules;
-    private final Module thisModule;
-    private final ScheduledExecutorService executorService;
-    private RedisClient redisClient;
-    private RedisConnection<String, String> connection;
-    private UUID mainNode;
-    private boolean mainNodeRegistered;
+    protected final List<Module> modules;
+    protected final Module thisModule;
+    protected UUID mainNode;
+    protected boolean mainNodeRegistered;
 
     @Contract(pure = true)
     public ModuleManager(Module module) {
         thisModule = module;
         this.modules = new CopyOnWriteArrayList<>();
-        this.executorService = Executors.newScheduledThreadPool(1);
+    }
+
+    public List<Module> getAllModules() {
+        List<Module> modules = new ArrayList<>(this.modules);
+        modules.add(thisModule);
+        return modules;
     }
 
     public Module getThisModule() {
@@ -50,43 +53,6 @@ public class ModuleManager {
     }
 
 
-
-    public void start() {
-        redisClient = new RedisClient(RedisURI.create("redis://"+ CloudAPI.getInstance().getConfiguration().getRedisPassword() +"@"+CloudAPI.getInstance().getConfiguration().getRedisHost()+":"+CloudAPI.getInstance().getConfiguration().getRedisPort()));
-        redisClient.setDefaultTimeout(CloudAPI.getInstance().getConfiguration().getRedisDefaultTimeout(),TimeUnit.MILLISECONDS);
-        connection = redisClient.connect();
-        executorService.scheduleWithFixedDelay(this::update, 0, 1, TimeUnit.MINUTES);
-    }
-
-    public void stop() {
-        executorService.shutdownNow();
-
-        ModuleDisconnectInfo disconnectInfo = new ModuleDisconnectInfo(thisModule);
-        NetworkManager.getInstance().sendPacket(disconnectInfo);
-
-        connection.close();
-        redisClient.shutdown();
-    }
-
-    public void update() {
-        String mainNode = connection.get("main-node-network-id");
-
-        if (isMainNode()) {
-            connection.setex("main-node-network-id", 60, thisModule.getNetworkId().toString());
-        } else if (mainNode == null) {
-            if (!mainNodeRegistered) {
-                connection.set("main-node-network-id", thisModule.getNetworkId().toString());
-
-                this.mainNode = thisModule.getNetworkId();
-
-                mainNodeRegistered = true;
-            }
-            mainNodeRegistered = false;
-        } else {
-            this.mainNode = UUID.fromString(mainNode);
-            mainNodeRegistered = true;
-        }
-    }
 
     public boolean addModule(Module module) {
         if (modules.stream().anyMatch(module1 -> module1.getName().equals(module.getName()) && module1.getNetworkId().equals(module.getNetworkId())))
@@ -104,8 +70,8 @@ public class ModuleManager {
     }
 
 
-    public Optional<Module> getNodes() {
-        return modules.stream().filter(module -> module.getModuleType().equals(ModuleType.NODE)).findFirst();
+    public List<Module> getNodes() {
+        return modules.stream().filter(module -> module.getModuleType().equals(ModuleType.NODE)).collect(Collectors.toList());
     }
 
     public List<Module> getServers() {

@@ -2,7 +2,6 @@ package de.curse.allround.core.cloud.servergroup;
 
 import de.curse.allround.core.cloud.CloudAPI;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +15,7 @@ public class NodeGroupManager extends ServerGroupManager {
     private final ScheduledExecutorService scheduledExecutorService;
 
     public NodeGroupManager() {
+        super(NodeGroup.class);
         scheduledExecutorService = Executors.newScheduledThreadPool(0);
     }
 
