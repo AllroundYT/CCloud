@@ -1,5 +1,8 @@
 package de.curse.allround.core.cloud.servergroup;
 
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.server.ServerUpdateInfo;
+import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupUpdateInfo;
 import de.curse.allround.core.cloud.server.Server;
 import de.curse.allround.core.cloud.server.StartConfiguration;
 import lombok.AllArgsConstructor;
@@ -18,5 +21,23 @@ public abstract class ServerGroup {
     private Set<String> ignoredStates;
     private StartConfiguration defaultStartConfiguration;
 
+    public void broadcastUpdate(){
+        NetworkManager.getInstance().sendPacket(new GroupUpdateInfo(this));
+    }
     public abstract Server createServer();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ServerGroup that = (ServerGroup) o;
+
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

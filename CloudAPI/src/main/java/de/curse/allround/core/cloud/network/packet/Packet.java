@@ -22,6 +22,10 @@ public class Packet {
     private UUID responseId;
     private UUID receiver;
 
+    public <T extends PacketType> T convert(Class<T> packetType){
+        return PacketConverter.getInstance().convert(this);
+    }
+
     private Packet(String type, String[] data) {
         this.type = type;
         this.data = data;

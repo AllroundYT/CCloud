@@ -1,0 +1,12 @@
+{
+  "redis-user": "cloud",
+  "redis-password": "password",
+  "redis-host": "127.0.0.1",
+  "redis-port": 5555,
+  "redis-default-timeout": 10000,
+  "rabbitmq-host": "127.0.0.1",
+  "rabbitmq-port": 6845,
+  "rabbitmq-user": "cloud",
+  "rabbitmq-password": "password",
+  "rabbitmq-connection-timeout": 10000
+}

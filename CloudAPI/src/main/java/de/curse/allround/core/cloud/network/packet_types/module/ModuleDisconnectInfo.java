@@ -28,6 +28,6 @@ public class ModuleDisconnectInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("MODULE_DISCONNECT_INFO", new String[]{module.getName(),module.getModuleType().name(),module.getNetworkId().toString()});
+        return Packet.regular("MODULE_DISCONNECT_INFO", module.getName(),module.getModuleType().name(),module.getNetworkId().toString());
     }
 }

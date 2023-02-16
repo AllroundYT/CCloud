@@ -1,5 +1,7 @@
 package de.curse.allround.core.cloud.server;
 
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.server.ServerUpdateInfo;
 import de.curse.allround.core.cloud.servergroup.ServerGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +29,10 @@ public abstract class Server {
     public void start(){
         if (serverGroup == null || serverGroup.getDefaultStartConfiguration() == null) return;
         start(serverGroup.getDefaultStartConfiguration());
+    }
+
+    public void broadcastUpdate(){
+        NetworkManager.getInstance().sendPacket(new ServerUpdateInfo(this));
     }
 
     public abstract CompletableFuture<Boolean> start(StartConfiguration startConfiguration);

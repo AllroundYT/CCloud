@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public abstract class Command {
     private final String name;
-    private String permission = "";
+    private String description = "";
     private String[] alias = {};
 
     public abstract void execute(String[] args);

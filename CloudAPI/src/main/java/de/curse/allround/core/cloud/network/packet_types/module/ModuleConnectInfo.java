@@ -28,6 +28,6 @@ public class ModuleConnectInfo extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.regular("MODULE_CONNECT_INFO", new String[]{module.getName(),module.getModuleType().name(),module.getNetworkId().toString()});
+        return Packet.regular("MODULE_CONNECT_INFO", module.getName(),module.getModuleType().name(),module.getNetworkId().toString());
     }
 }

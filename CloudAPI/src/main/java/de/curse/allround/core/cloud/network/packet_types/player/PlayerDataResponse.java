@@ -16,8 +16,8 @@ import java.util.UUID;
 @Getter
 public class PlayerDataResponse extends PacketType {
 
-    private final Player player;
     private final UUID responseId;
+    private final Player player;
 
     public PlayerDataResponse(Packet packet) {
         super(packet);
@@ -30,6 +30,6 @@ public class PlayerDataResponse extends PacketType {
 
     @Override
     public Packet toPacket() {
-        return Packet.response(responseId, "PLAYER_DATA_RESPONSE",  new String[]{player.getUuid().toString(), player.getServer() != null ? player.getServer().getName() : "", player.getProxy() != null ? player.getProxy().getName() : ""});
+        return Packet.response(responseId, "PLAYER_DATA_RESPONSE", player.getUuid().toString(), player.getServer() != null ? player.getServer().getName() : "", player.getProxy() != null ? player.getProxy().getName() : "");
     }
 }

@@ -17,6 +17,9 @@ public class NodeProxy extends Proxy{
         super(name, node, networkId, motd, maxRam, maxPlayers, maintenance, status, host, port, running);
     }
 
+    public void startProcess(){
+
+    }
     @Override
     public CompletableFuture<Boolean> start() {
         ProxyStartRequest proxyStartRequest = new ProxyStartRequest(getName());

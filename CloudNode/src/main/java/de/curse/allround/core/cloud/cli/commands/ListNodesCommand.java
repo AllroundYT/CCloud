@@ -7,14 +7,14 @@ import de.curse.allround.core.cloud.module.ModuleType;
 
 import java.util.UUID;
 
-public class NodeInfoCommand extends Command {
-    public NodeInfoCommand() {
-        super("NodeInfo", "This command displays info about alle running CloudNodes", new String[]{});
+public class ListNodesCommand extends Command {
+    public ListNodesCommand() {
+        super("ListNodes", "This command displays info about all running CloudNodes", new String[]{});
     }
 
     @Override
     public void execute(String[] args) {
-        CloudNode.LOGGER.info("----------------- NodeInfo -----------------");
+        System.out.println("----------------- NodeInfo -----------------");
         CloudAPI.getInstance().getModuleManager().getModules().forEach(module -> {
             if (!module.getModuleType().equals(ModuleType.NODE)){
                 return;
@@ -23,8 +23,8 @@ public class NodeInfoCommand extends Command {
             UUID networkId = module.getNetworkId();
             String name = module.getName();
 
-            CloudNode.LOGGER.info("CloudNode -> Name: "+name+" -> NetworkID: "+networkId+" -> MainNode: "+CloudAPI.getInstance().getModuleManager().getMainNode().equals(networkId));
+            System.out.println("Node → Name: "+name+" → NetworkID: "+networkId+" → MainNode: "+CloudAPI.getInstance().getModuleManager().getMainNode().equals(networkId));
         });
-        CloudNode.LOGGER.info("--------------------------------------------");
+        System.out.println("--------------------------------------------");
     }
 }

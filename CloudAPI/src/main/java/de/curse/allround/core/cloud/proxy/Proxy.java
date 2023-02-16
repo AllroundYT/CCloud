@@ -1,5 +1,8 @@
 package de.curse.allround.core.cloud.proxy;
 
+import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.proxy.ProxyUpdateInfo;
+import de.curse.allround.core.cloud.network.packet_types.server.ServerUpdateInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,9 @@ public abstract class Proxy {
     private int port;
     private boolean running;
 
+    public void broadcastUpdate(){
+        NetworkManager.getInstance().sendPacket(new ProxyUpdateInfo(this));
+    }
     public abstract CompletableFuture<Boolean> start();
     public abstract CompletableFuture<Boolean> stop();
 }

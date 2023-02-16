@@ -1,5 +1,8 @@
 package de.curse.allround.core.cloud.cli;
 
+import de.curse.allround.core.cloud.cli.commands.HelpCommand;
+import de.curse.allround.core.cloud.cli.commands.ListeGroupsCommand;
+import de.curse.allround.core.cloud.cli.commands.ListNodesCommand;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -36,12 +39,29 @@ public class CommandManager {
         }
     }
 
+    public void start(){
+        startInputScanner();
+
+        //register commands
+        registerCommand(new ListNodesCommand());
+        registerCommand(new ListeGroupsCommand());
+        registerCommand(new HelpCommand());
+    }
+
+    public List<Command> getCommands() {
+        return commands;
+    }
+
+    public void stop(){
+        stopInputScanner();
+    }
+
     public void startInputScanner() {
         running = false;
         running = true;
         executorService.submit(() -> {
             while (running) {
-                onCommandLine(lineReader.readLine("[Input] >> "));
+                onCommandLine(lineReader.readLine("[Input] » "));
             }
         });
     }
@@ -79,7 +99,10 @@ public class CommandManager {
         if (lineParts.length == 0) return;
         String cmd = lineParts[0];
         Optional<Command> optionalCommand = getCommand(cmd);
-        if (optionalCommand.isEmpty()) return;
+        if (optionalCommand.isEmpty()) {
+            System.out.println("No command found with this name. Try \"help\" for more information.");
+            return;
+        }
         if (lineParts.length <= 1) {
             optionalCommand.get().execute(new String[0]);
         } else optionalCommand.get().execute(Arrays.copyOfRange(lineParts, 1, lineParts.length - 1));

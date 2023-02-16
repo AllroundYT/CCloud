@@ -1,27 +1,28 @@
-package de.curse.allround.core.cloud.network.packet_types.player;
+package de.curse.allround.core.cloud.network.packet_types.module;
 
 import de.curse.allround.core.cloud.network.packet.Packet;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.util.JsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Getter
-public class PlayerListResponse extends PacketType {
+public class ModuleListResponse extends PacketType {
     private final UUID responseId;
-    private final UUID[] players;
+    private final UUID[] modules;
 
-    public PlayerListResponse(Packet packet) {
+    public ModuleListResponse(@NotNull Packet packet) {
         super(packet);
         this.responseId = packet.getResponseId();
-        this.players = JsonUtil.GSON.fromJson(packet.getData()[0],UUID[].class);
+        this.modules = JsonUtil.GSON.fromJson(packet.getData()[0],UUID[].class);
     }
 
     @Override
     public Packet toPacket() {
-        return Packet.response(responseId,"PLAYER_LIST_RESPONSE",JsonUtil.GSON.toJson(players));
+        return Packet.response(responseId,"MODULE_LIST_RESPONSE",JsonUtil.GSON.toJson(modules));
     }
 }

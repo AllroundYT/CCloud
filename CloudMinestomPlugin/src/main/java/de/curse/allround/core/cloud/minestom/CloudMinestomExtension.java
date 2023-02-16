@@ -6,7 +6,6 @@ public class CloudMinestomExtension extends Extension {
 
     @Override
     public void initialize() {
-
     }
 
     @Override

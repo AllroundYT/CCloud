@@ -3,8 +3,6 @@ package de.curse.allround.core.cloud.network.packet;
 
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.listener.PacketListener;
-import de.curse.allround.core.cloud.network.packet.listener.SimplePacketListener;
-import de.curse.allround.core.cloud.network.packet.listener.SpecificTypePacketListener;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -20,16 +18,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Getter(AccessLevel.PROTECTED)
 public class EventBus {
 
-    private final List<Listener> listeners;
-    private final List<SpecificTypeListener> specificTypeListeners;
     private final List<SimpleListener> simpleListeners;
     private final Map<UUID, CompletableFuture<Packet>> requestFutures;
 
     public EventBus() {
         this.requestFutures = new HashMap<>();
         this.simpleListeners = new CopyOnWriteArrayList<>();
-        this.listeners = new CopyOnWriteArrayList<>();
-        this.specificTypeListeners = new CopyOnWriteArrayList<>();
     }
 
     public CompletableFuture<Packet> getRequestFuture(UUID requestId){
@@ -46,8 +40,6 @@ public class EventBus {
 
     public void unregister(UUID uuid) {
         this.simpleListeners.removeIf(packetListener -> packetListener.getUuid().equals(uuid));
-        this.listeners.removeIf(packetListener -> packetListener.getUuid().equals(uuid));
-        this.specificTypeListeners.removeIf(specificTypeListener -> specificTypeListener.getUuid().equals(uuid));
     }
 
     public void onPacket(@NotNull Packet packet) {
@@ -59,14 +51,6 @@ public class EventBus {
             }
         }
 
-        listeners.forEach(listener -> {
-            if (packet.isAddressed() && !CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId().equals(packet.getReceiver()))
-                return;
-            if (listener.getResponseId() != null && packet.isResponse() && !listener.getResponseId().equals(packet.getResponseId()))
-                return;
-
-            listener.packetListener.listen(packet.getType(), packet);
-        });
 
         simpleListeners.forEach(listener -> {
             if (packet.isAddressed() && !CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId().equals(packet.getReceiver()))
@@ -76,95 +60,32 @@ public class EventBus {
 
             if (!listener.getType().equals(packet.getType())) return;
 
-            listener.getSimplePacketListener().listen(packet);
-        });
-
-        specificTypeListeners.forEach(listener -> {
-            if (packet.isAddressed() && !CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId().equals(packet.getReceiver()))
-                return;
-            if (!PacketConverter.getInstance().isConvertable(packet)) return;
-            if (listener.getResponseId() != null && packet.isResponse() && !listener.getResponseId().equals(packet.getResponseId()))
-                return;
-
-            if (!listener.getType().equals(packet.getType())) return;
-
-            listener.getSpecificTypePacketListener().listen(PacketConverter.getInstance().convert(packet));
+            listener.getPacketListener().listen(packet);
         });
     }
 
-    public UUID listen(String type, SimplePacketListener simplePacketListener) {
+    public UUID listen(String type, PacketListener packetListener) {
         UUID listenerId = UUID.randomUUID();
-        SimpleListener simpleListener = new SimpleListener(type,  listenerId, simplePacketListener);
+        SimpleListener simpleListener = new SimpleListener(type,  listenerId, packetListener);
         this.simpleListeners.add(simpleListener);
         return listenerId;
     }
 
-    public UUID listenType(String type, SpecificTypePacketListener<?> specificTypePacketListener) {
+    public UUID listenResponse(String type,  UUID responseId, PacketListener packetListener) {
         UUID listenerId = UUID.randomUUID();
-        SpecificTypeListener specificTypeListener = new SpecificTypeListener(type,  listenerId, specificTypePacketListener);
-        specificTypeListeners.add(specificTypeListener);
-        return listenerId;
-    }
-
-    public UUID listen(PacketListener packetListener) {
-        UUID listenerId = UUID.randomUUID();
-        Listener listener = new Listener(listenerId, packetListener);
-        this.listeners.add(listener);
-        return listenerId;
-    }
-
-    public UUID listenResponse(UUID responseId, PacketListener packetListener) {
-        UUID listenerId = UUID.randomUUID();
-        Listener listener = new Listener(listenerId, packetListener);
-        listener.setResponseId(responseId);
-        this.listeners.add(listener);
-        return listenerId;
-    }
-
-    public UUID listenResponse(String type,  UUID responseId, SimplePacketListener simplePacketListener) {
-        UUID listenerId = UUID.randomUUID();
-        SimpleListener simpleListener = new SimpleListener(type,  listenerId, simplePacketListener);
+        SimpleListener simpleListener = new SimpleListener(type,  listenerId, packetListener);
         simpleListener.setResponseId(responseId);
         this.simpleListeners.add(simpleListener);
         return listenerId;
     }
 
-    public UUID listenResponseType(String type,  UUID responseId, SpecificTypePacketListener<?> specificTypePacketListener) {
-        UUID listenerId = UUID.randomUUID();
-        SpecificTypeListener specificTypeListener = new SpecificTypeListener(type,  listenerId, specificTypePacketListener);
-        specificTypeListener.setResponseId(responseId);
-        specificTypeListeners.add(specificTypeListener);
-        return listenerId;
-    }
-
-    public UUID listenResponse(PacketListener packetListener) {
-        UUID listenerId = UUID.randomUUID();
-        Listener listener = new Listener(listenerId, packetListener);
-        this.listeners.add(listener);
-        return listenerId;
-    }
-
-    @Data
-    private static class Listener {
-        private final UUID uuid;
-        private final PacketListener packetListener;
-        private UUID responseId;
-    }
 
     @Data
     private static class SimpleListener {
         private final String type;
         private final UUID uuid;
-        private final SimplePacketListener simplePacketListener;
+        private final PacketListener packetListener;
 
-        private UUID responseId;
-    }
-
-    @Data
-    private static class SpecificTypeListener {
-        private final String type;
-        private final UUID uuid;
-        private final SpecificTypePacketListener<?> specificTypePacketListener;
         private UUID responseId;
     }
 }

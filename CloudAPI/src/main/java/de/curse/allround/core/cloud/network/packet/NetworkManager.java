@@ -25,11 +25,11 @@ public class NetworkManager {
     private final Receiver receiver;
 
     @Contract(pure = true)
-    public NetworkManager() {
+    public NetworkManager(int connectionTimeout,String host,int port,String user,String password) {
         NetworkManager.instance = this;
         this.eventBus = new EventBus();
-        this.publisher = new Publisher();
-        this.receiver = new Receiver();
+        this.publisher = new Publisher(connectionTimeout, host, port, user, password);
+        this.receiver = new Receiver(connectionTimeout, host, port, user, password);
     }
 
     public boolean sendPacket(Packet packet){

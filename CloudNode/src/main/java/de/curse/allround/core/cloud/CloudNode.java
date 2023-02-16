@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud;
 
+import de.curse.allround.core.cloud.cli.CommandManager;
 import de.curse.allround.core.cloud.config.NodeConfiguration;
 import de.curse.allround.core.cloud.extension.ExtensionManager;
 import de.curse.allround.core.cloud.extension.NodeExtensionManager;
@@ -35,17 +36,22 @@ public class CloudNode extends CloudAPI{
         return CloudAPI.getInstance(CloudNode.class);
     }
 
-    public final static Logger LOGGER = LoggerFactory.getLogger("CloudLogger");
+    public final static Logger LOGGER = LoggerFactory.getLogger(CloudNode.class);
 
-    private final ModuleManager moduleManager;
-    private final ExtensionManager extensionManager;
+    private final NodeModuleManager moduleManager;
+    private final NodeExtensionManager extensionManager;
     private final ServerManager serverManager;
-    private final ServerGroupManager serverGroupManager;
+    private final NodeGroupManager serverGroupManager;
     private final ProxyManager proxyManager;
     private final PlayerManager playerManager;
-    private final NetworkManager networkManager;
+    private final NodeNetworkManager networkManager;
     private final NodeConfiguration nodeConfiguration;
+    private final CommandManager commandManager;
     public CloudNode() {
+
+        this.nodeConfiguration = new NodeConfiguration();
+        getConfiguration().load(Path.of("config.json"));
+
         this.moduleManager = new NodeModuleManager(new Module(ModuleType.NODE, UUID.randomUUID(),"Node"));
         this.extensionManager = new NodeExtensionManager();
         this.serverManager = new ServerManager(NodeServer.class);
@@ -53,7 +59,7 @@ public class CloudNode extends CloudAPI{
         this.proxyManager = new ProxyManager(NodeProxy.class);
         this.playerManager = new PlayerManager(NodePlayer.class);
         this.networkManager = new NodeNetworkManager();
-        this.nodeConfiguration = new NodeConfiguration();
+        this.commandManager = new CommandManager();
     }
 
     @Override
@@ -67,7 +73,7 @@ public class CloudNode extends CloudAPI{
     }
 
     @Override
-    public NetworkManager getNetworkManager() {
+    public NodeNetworkManager getNetworkManager() {
         return networkManager;
     }
 
@@ -77,12 +83,12 @@ public class CloudNode extends CloudAPI{
     }
 
     @Override
-    public ServerGroupManager getServerGroupManager() {
+    public NodeGroupManager getServerGroupManager() {
         return serverGroupManager;
     }
 
     @Override
-    public ModuleManager getModuleManager() {
+    public NodeModuleManager getModuleManager() {
         return moduleManager;
     }
 
@@ -92,13 +98,16 @@ public class CloudNode extends CloudAPI{
     }
 
     @Override
-    public ExtensionManager getExtensionManager() {
+    public NodeExtensionManager getExtensionManager() {
         return extensionManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     @Override
     public void init() {
-
         try {
             Files.createDirectories(Path.of("Extensions"));
             Files.createDirectories(Path.of("Storage","ServerGroups"));
@@ -109,53 +118,51 @@ public class CloudNode extends CloudAPI{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        getConfiguration().load(Path.of("config.json"));
-
-
     }
 
     @Override
     public void start() {
         Instant start = Instant.now();
-        LOGGER.info("Welcome to CurseCloud v1.0.0-Beta.");
-        LOGGER.info("LOGO HERE");
-        LOGGER.info("CloudNode starting...");
+        System.out.println("Welcome to CurseCloud v1.0.0-Beta.");
+        System.out.println("LOGO HERE");
+        System.out.println("CloudNode starting...");
 
-        ((NodeModuleManager)getModuleManager()).start();
+        getCommandManager().start();
+        getModuleManager().start();
         getNetworkManager().start();
-        ((NodeGroupManager) getServerGroupManager()).start();
+        getServerGroupManager().start();
 
-        LOGGER.info("Loading and enabling CloudExtensions...");
+        System.out.println("Loading and enabling CloudExtensions...");
         getExtensionManager().scanForExtensions();
-        getExtensionManager().loadAll(extensionInfo -> LOGGER.info("Extension loaded: "+extensionInfo.extensionInfoFile().getName()+"-"+extensionInfo.extensionInfoFile().getVersion()));
-        getExtensionManager().enableAll(extensionInfo -> LOGGER.info("Extension enabled: "+extensionInfo.extensionInfoFile().getName()+"-"+extensionInfo.extensionInfoFile().getVersion()));
-        LOGGER.info("CloudExtensions loaded and enabled.");
+        getExtensionManager().loadAll(extensionInfo -> System.out.println("Extension loaded: "+extensionInfo.extensionInfoFile().getName()+"-"+extensionInfo.extensionInfoFile().getVersion()));
+        getExtensionManager().enableAll(extensionInfo -> System.out.println("Extension enabled: "+extensionInfo.extensionInfoFile().getName()+"-"+extensionInfo.extensionInfoFile().getVersion()));
+        System.out.println("CloudExtensions loaded and enabled.");
 
         if (getModuleManager().isMainNode()){
-            LOGGER.warn("This CloudNode has claimed the position as \"MainNode\".");
+            System.err.println("This CloudNode has claimed the position as \"MainNode\".");
         }else {
             requestNeededData();
         }
 
-        LOGGER.info("CloudNode started in "+ Duration.between(start,Instant.now()).toMillis() +" ms. Waiting for command...");
+        System.out.println("CloudNode started in "+ Duration.between(start,Instant.now()).toMillis() +" ms. Waiting for command...");
     }
 
     @Override
     public void stop() {
         Instant stop = Instant.now();
-        LOGGER.info("Stopping CloudNode...");
+        System.out.println("Stopping CloudNode...");
 
-        getExtensionManager().disableAll(extensionInfo -> LOGGER.info("Extension disabled: "+extensionInfo.extensionInfoFile().getName()+"-"+extensionInfo.extensionInfoFile().getVersion()));
+        getExtensionManager().disableAll(extensionInfo -> System.out.println("Extension disabled: "+extensionInfo.extensionInfoFile().getName()+"-"+extensionInfo.extensionInfoFile().getVersion()));
 
         if (getModuleManager().isMainNode()){
-            LOGGER.warn("As this CloudNode was the \"MainNode\" an other CloudNode claimed this job. If there is no other CloudNode the cloud will stop completely.");
+            System.err.println("As this CloudNode was the \"MainNode\" an other CloudNode claimed this job. If there is no other CloudNode the cloud will stop completely.");
         }
 
         getNetworkManager().stop();
-        ((NodeModuleManager)getModuleManager()).stop();
+        getModuleManager().stop();
+        getCommandManager().stop();
 
-        LOGGER.info("CloudNode stopped in "+Duration.between(stop,Instant.now()).toMillis()+" ms. Have a nice day...");
+        System.out.println("CloudNode stopped in "+Duration.between(stop,Instant.now()).toMillis()+" ms. Have a nice day...");
     }
 
     public void requestNeededData(){
