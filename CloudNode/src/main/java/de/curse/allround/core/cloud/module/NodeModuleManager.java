@@ -6,6 +6,7 @@ import com.lambdaworks.redis.RedisURI;
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.CloudNode;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
+import de.curse.allround.core.cloud.network.packet_types.module.MainNodeSwitchInfo;
 import de.curse.allround.core.cloud.network.packet_types.module.ModuleDisconnectInfo;
 
 import java.util.UUID;
@@ -48,6 +49,7 @@ public class NodeModuleManager extends ModuleManager{
                 connection.set("main-node-network-id", thisModule.getNetworkId().toString());
 
                 this.mainNode = thisModule.getNetworkId();
+                NetworkManager.getInstance().sendPacket(new MainNodeSwitchInfo(thisModule.getNetworkId()));
 
                 mainNodeRegistered = true;
             }

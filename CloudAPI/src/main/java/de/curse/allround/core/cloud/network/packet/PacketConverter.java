@@ -19,6 +19,7 @@ public class PacketConverter {
         this.packetTypes = new HashMap<>();
 
         /* MODULE PACKET TYPES */
+        registerType("MAIN_NODE_SWITCH_INFO",MainNodeSwitchInfo.class);
         registerType("MODULE_CONNECT_INFO", ModuleConnectInfo.class);
         registerType("MODULE_DISCONNECT_INFO", ModuleDisconnectInfo.class);
         registerType("MODULE_DATA_REQUEST", ModuleDataRequest.class);
@@ -77,6 +78,8 @@ public class PacketConverter {
         registerType("GROUP_LIST_REQUEST", GroupListRequest.class);
         registerType("GROUP_LIST_RESPONSE",GroupListResponse.class);
         registerType("GROUP_UPDATE_INFO",GroupUpdateInfo.class);
+        registerType("GROUP_TEMPLATE_REQUEST",GroupTemplateRequest.class);
+        registerType("GROUP_TEMPLATE_RESPONSE",GroupTemplateResponse.class);
     }
 
     public static PacketConverter getInstance() {

@@ -1,7 +1,7 @@
 package de.curse.allround.core.cloud.network.listener;
 
 import de.curse.allround.core.cloud.CloudAPI;
-import de.curse.allround.core.cloud.network.packet.EventBus;
+import de.curse.allround.core.cloud.network.packet.PacketBus;
 import de.curse.allround.core.cloud.network.packet_types.server.ServerCreateInfo;
 import de.curse.allround.core.cloud.network.packet_types.server.ServerDeleteInfo;
 import de.curse.allround.core.cloud.network.packet_types.server.ServerUpdateInfo;
@@ -9,15 +9,15 @@ import de.curse.allround.core.cloud.server.Server;
 
 public class ServerListener {
     public void register(){
-        EventBus eventBus = CloudAPI.getInstance().getNetworkManager().getEventBus();
+        PacketBus packetBus = CloudAPI.getInstance().getNetworkManager().getPacketBus();
 
-        eventBus.listen("SERVER_CREATE_INFO",packet -> {
+        packetBus.listen("SERVER_CREATE_INFO", packet -> {
             CloudAPI.getInstance().getServerManager().addServer(packet.convert(ServerCreateInfo.class).getServer());
         });
-        eventBus.listen("SERVER_DELETE_INFO",packet -> {
+        packetBus.listen("SERVER_DELETE_INFO", packet -> {
             CloudAPI.getInstance().getServerManager().removeServer(packet.convert(ServerDeleteInfo.class).getServer());
         });
-        eventBus.listen("SERVER_UPDATE_INFO",packet -> {
+        packetBus.listen("SERVER_UPDATE_INFO", packet -> {
             Server server = packet.convert(ServerUpdateInfo.class).getServer();
             if (CloudAPI.getInstance().getServerManager().addServer(server)){
                 return;
@@ -34,11 +34,11 @@ public class ServerListener {
             foundServer.setStatus(server.getStatus());
         });
 
-        eventBus.listen("SERVER_DATA_REQUEST",packet -> {
+        packetBus.listen("SERVER_DATA_REQUEST", packet -> {
 
         });
 
-        eventBus.listen("SERVER_LIST_REQUEST",packet -> {
+        packetBus.listen("SERVER_LIST_REQUEST", packet -> {
 
         });
     }

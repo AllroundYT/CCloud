@@ -3,7 +3,6 @@ package de.curse.allround.core.cloud.network.packet;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import de.curse.allround.core.cloud.CloudAPI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

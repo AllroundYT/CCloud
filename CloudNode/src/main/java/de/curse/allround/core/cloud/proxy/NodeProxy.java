@@ -20,6 +20,10 @@ public class NodeProxy extends Proxy{
     public void startProcess(){
 
     }
+
+    public void createFolder(){
+
+    }
     @Override
     public CompletableFuture<Boolean> start() {
         ProxyStartRequest proxyStartRequest = new ProxyStartRequest(getName());

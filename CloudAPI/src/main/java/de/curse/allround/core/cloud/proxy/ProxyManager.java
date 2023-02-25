@@ -10,16 +10,18 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Data
-public class ProxyManager {
+public abstract class ProxyManager {
     private final List<Proxy> proxies;
     private final Class<? extends Proxy> proxyImplClass;
+
     @Contract(pure = true)
     public ProxyManager(Class<? extends Proxy> proxyImplClass) {
         this.proxyImplClass = proxyImplClass;
         this.proxies = new CopyOnWriteArrayList<>();
     }
 
-    public void deleteProxy(String proxy){
+    public abstract Proxy createProxy();
+    public synchronized void deleteProxy(String proxy){
         if (getProxy(proxy).isEmpty()) return;
         if (getProxy(proxy).get().isRunning()){
             getProxy(proxy).get().stop().handleAsync((success, throwable) -> {
@@ -37,17 +39,17 @@ public class ProxyManager {
         }
     }
 
-    public Optional<Proxy> getProxy(String name){
+    public synchronized Optional<Proxy> getProxy(String name){
         return proxies.stream().filter(proxy -> proxy.getName().equals(name)).findFirst();
     }
 
-    public boolean addProxy(Proxy proxy){
+    public synchronized boolean addProxy(Proxy proxy){
         if (proxies.stream().anyMatch(proxy1 -> proxy1.getName().equals(proxy.getName()))) return false;
         proxies.add(proxy);
         return true;
     }
 
-    public void removeProxy(String name){
+    public synchronized void removeProxy(String name){
         proxies.removeIf(proxy -> proxy.getName().equals(name));
     }
 }

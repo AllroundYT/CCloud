@@ -17,6 +17,7 @@
       <set>
         <option value="$PROJECT_DIR$/CloudController/pom.xml" />
         <option value="$PROJECT_DIR$/CloudDaemon/pom.xml" />
+        <option value="$PROJECT_DIR$/SimpleCloudAPI/pom.xml" />
       </set>
     </option>
   </component>

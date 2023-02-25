@@ -1,6 +1,7 @@
 package de.curse.allround.core.cloud;
 
 
+import de.curse.allround.core.cloud.event.EventBus;
 import de.curse.allround.core.cloud.extension.ExtensionManager;
 import de.curse.allround.core.cloud.module.ModuleManager;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
@@ -28,7 +29,11 @@ public abstract class CloudAPI implements Startable, Stopable, Initializeable {
             throw new RuntimeException("CloudAPI can only be initialized once.");
         }
         CloudAPI.instance = this;
+
+        this.eventBus = new EventBus();
     }
+
+    private final EventBus eventBus;
 
     public abstract PlayerManager getPlayerManager();
 

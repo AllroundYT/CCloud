@@ -1,6 +1,6 @@
 package de.curse.allround.core.cloud.network.listener;
 
-import de.curse.allround.core.cloud.network.packet.EventBus;
+import de.curse.allround.core.cloud.network.packet.PacketBus;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
 
 /**
@@ -9,7 +9,7 @@ import de.curse.allround.core.cloud.network.packet.NetworkManager;
  */
 public class DefaultListener {
     public void register(){
-        EventBus eventBus = NetworkManager.getInstance().getEventBus();
+        PacketBus packetBus = NetworkManager.getInstance().getPacketBus();
 
         new ServerListener().register();
         new ProxyListener().register();

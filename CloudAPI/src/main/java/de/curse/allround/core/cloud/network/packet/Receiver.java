@@ -46,7 +46,7 @@ public class Receiver {
                 channel.queueBind(queue, "CLOUD", "");
                 while (connection.isOpen()) {
                     DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                        NetworkManager.getInstance().getEventBus().onPacket(Objects.requireNonNull(Packet.deserialize(delivery.getBody())));
+                        NetworkManager.getInstance().getPacketBus().onPacket(Objects.requireNonNull(Packet.deserialize(delivery.getBody())));
                     };
 
                     try {

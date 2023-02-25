@@ -1,8 +1,6 @@
 package de.curse.allround.core.cloud.cli;
 
-import de.curse.allround.core.cloud.cli.commands.HelpCommand;
-import de.curse.allround.core.cloud.cli.commands.ListeGroupsCommand;
-import de.curse.allround.core.cloud.cli.commands.ListNodesCommand;
+import de.curse.allround.core.cloud.cli.commands.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +44,8 @@ public class CommandManager {
         registerCommand(new ListNodesCommand());
         registerCommand(new ListeGroupsCommand());
         registerCommand(new HelpCommand());
+        registerCommand(new ListServersCommand());
+        registerCommand(new GroupInfoCommand());
     }
 
     public List<Command> getCommands() {

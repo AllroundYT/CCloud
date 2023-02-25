@@ -16,12 +16,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter(AccessLevel.PROTECTED)
-public class EventBus {
+public class PacketBus {
 
     private final List<SimpleListener> simpleListeners;
     private final Map<UUID, CompletableFuture<Packet>> requestFutures;
 
-    public EventBus() {
+    public PacketBus() {
         this.requestFutures = new HashMap<>();
         this.simpleListeners = new CopyOnWriteArrayList<>();
     }

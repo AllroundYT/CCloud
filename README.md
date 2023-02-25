@@ -19,3 +19,12 @@ wechselt der MainNode.
 
 Wenn ein CloudNode disconnectet laufen die Server, welche von dem Node gesteuert wurden noch weiter,
 es können jedoch keine neuen Server auf dem VServer des Nodes gestartet werden.
+
+To-Do Liste:
+- Events implementieren
+- ServerGroup Templates per packet übertragen
+- CloudNode fertigstellen
+- Minestom implementation
+- Velocity Plugin
+- Spigot Plugin (Optional)
+- Bungeecord Plugin (Optional)

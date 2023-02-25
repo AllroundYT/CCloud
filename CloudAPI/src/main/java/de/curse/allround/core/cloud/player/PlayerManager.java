@@ -22,25 +22,25 @@ public class PlayerManager {
         this.players = new CopyOnWriteArrayList<>();
     }
 
-    public Optional<Player> getPlayer(UUID uuid){
+    public synchronized Optional<Player> getPlayer(UUID uuid){
         return players.stream().filter(player -> player.getUuid().equals(uuid)).findFirst();
     }
 
-    public List<Player> getPlayers(Server server){
+    public synchronized List<Player> getPlayers(Server server){
         return players.stream().filter(player -> player.getServer().equals(server)).collect(Collectors.toList());
     }
 
-    public List<Player> getPlayers(Proxy proxy){
+    public synchronized List<Player> getPlayers(Proxy proxy){
         return players.stream().filter(player -> player.getProxy().equals(proxy)).collect(Collectors.toList());
     }
 
-    public boolean addPlayer(Player player){
+    public synchronized boolean addPlayer(Player player){
         if (players.stream().anyMatch(player1 -> player.getUuid().equals(player1.getUuid()))) return false;
         players.add(player);
         return true;
     }
 
-    public void removePlayer(UUID uuid){
+    public synchronized void removePlayer(UUID uuid){
         players.removeIf(player -> player.getUuid().equals(uuid));
     }
 }

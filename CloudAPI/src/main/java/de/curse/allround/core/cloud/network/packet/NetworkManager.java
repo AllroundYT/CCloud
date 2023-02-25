@@ -18,7 +18,7 @@ public class NetworkManager {
     }
 
     @Getter
-    private final EventBus eventBus;
+    private final PacketBus packetBus;
     @Getter(AccessLevel.PRIVATE)
     private final Publisher publisher;
     @Getter(AccessLevel.PRIVATE)
@@ -27,7 +27,7 @@ public class NetworkManager {
     @Contract(pure = true)
     public NetworkManager(int connectionTimeout,String host,int port,String user,String password) {
         NetworkManager.instance = this;
-        this.eventBus = new EventBus();
+        this.packetBus = new PacketBus();
         this.publisher = new Publisher(connectionTimeout, host, port, user, password);
         this.receiver = new Receiver(connectionTimeout, host, port, user, password);
     }
@@ -50,7 +50,7 @@ public class NetworkManager {
         sendPacket(packet);
         if (packet.getRequestId() == null) return null;
         CompletableFuture<Packet> future = new CompletableFuture<>();
-        getEventBus().addRequestFuture(packet.getRequestId(),future);
+        getPacketBus().addRequestFuture(packet.getRequestId(),future);
         return future;
     }
 

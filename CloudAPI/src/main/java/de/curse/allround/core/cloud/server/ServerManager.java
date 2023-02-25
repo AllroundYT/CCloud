@@ -20,7 +20,7 @@ public class ServerManager {
         this.servers = new CopyOnWriteArrayList<>();
     }
 
-    public void deleteServer(String server) {
+    public synchronized void deleteServer(String server) {
         if (getServer(server).isEmpty()) return;
         if (getServer(server).get().isRunning()) {
             getServer(server).get().stop().handleAsync((success, throwable) -> {
@@ -38,17 +38,17 @@ public class ServerManager {
         }
     }
 
-    public Optional<Server> getServer(String name) {
+    public synchronized Optional<Server> getServer(String name) {
         return servers.stream().filter(server -> server.getName().equals(name)).findFirst();
     }
 
-    public boolean addServer(Server server) {
+    public synchronized boolean addServer(Server server) {
         if (servers.stream().anyMatch(server1 -> server1.getName().equals(server.getName()))) return false;
         servers.add(server);
         return true;
     }
 
-    public void removeServer(String name) {
+    public synchronized void removeServer(String name) {
         servers.removeIf(server -> server.getName().equals(name));
     }
 }
