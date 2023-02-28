@@ -1,4 +1,4 @@
-package de.curse.allround.core.cloud.network.packet_types.servergroup;
+package de.curse.allround.core.cloud.network.packet_types.group;
 
 import de.curse.allround.core.cloud.network.packet.Packet;
 import de.curse.allround.core.cloud.network.packet.PacketType;

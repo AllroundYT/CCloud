@@ -35,9 +35,9 @@ public abstract class Server {
         NetworkManager.getInstance().sendPacket(new ServerUpdateInfo(this));
     }
 
-    public abstract CompletableFuture<Boolean> start(StartConfiguration startConfiguration);
+    public abstract CompletableFuture<?> start(StartConfiguration startConfiguration);
 
-    public abstract CompletableFuture<Boolean> stop();
+    public abstract CompletableFuture<?> stop();
 
-    public abstract CompletableFuture<Boolean> kickAll(String reason);
+    public abstract CompletableFuture<?> kickAll(String reason);
 }

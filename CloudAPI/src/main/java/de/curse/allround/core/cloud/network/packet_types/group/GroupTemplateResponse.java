@@ -1,9 +1,8 @@
-package de.curse.allround.core.cloud.network.packet_types.servergroup;
+package de.curse.allround.core.cloud.network.packet_types.group;
 
 import de.curse.allround.core.cloud.network.packet.Packet;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import de.curse.allround.core.cloud.util.FileUtils;
-import io.netty.buffer.UnpooledUnsafeDirectByteBuf;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

@@ -1,8 +1,7 @@
 package de.curse.allround.core.cloud.servergroup;
 
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
-import de.curse.allround.core.cloud.network.packet_types.server.ServerUpdateInfo;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupUpdateInfo;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupUpdateInfo;
 import de.curse.allround.core.cloud.server.Server;
 import de.curse.allround.core.cloud.server.StartConfiguration;
 import lombok.AllArgsConstructor;

@@ -1,26 +1,25 @@
 package de.curse.allround.core.cloud.servergroup;
 
 import de.curse.allround.core.cloud.CloudAPI;
+import de.curse.allround.core.cloud.CloudNode;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupTemplateUpdateInfo;
 import de.curse.allround.core.cloud.server.Server;
-import de.curse.allround.core.cloud.server.ServerSnapshot;
-import de.curse.allround.core.cloud.util.Document;
 import de.curse.allround.core.cloud.util.JsonUtil;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Getter
 public class NodeGroupManager extends ServerGroupManager {
     /*
      ServerGroups müssen geladen werden, wenn dies der mainnode ist.
@@ -30,9 +29,11 @@ public class NodeGroupManager extends ServerGroupManager {
     public static final Path GROUPS_DIR = Path.of("Storage", "Groups");
 
     private final ScheduledExecutorService scheduledExecutorService;
+    private final Set<String> updatedTemplates;
 
     public NodeGroupManager() {
         super(NodeGroup.class);
+        this.updatedTemplates = new HashSet<>();
         scheduledExecutorService = Executors.newScheduledThreadPool(0);
     }
 
@@ -41,7 +42,24 @@ public class NodeGroupManager extends ServerGroupManager {
             loadGroups();
         }
 
+        if (!CloudAPI.getInstance().getModuleManager().isMainNode()){
+            int updaterInterval = CloudNode.getInstance().getConfiguration().getServerGroupTemplateUpdateInterval();
+            scheduledExecutorService.scheduleAtFixedRate(() -> {
+                updatedTemplates.forEach(group -> {
+                    getGroup(group).ifPresent(serverGroup -> {
+                        NodeGroup nodeGroup = (NodeGroup) serverGroup;
+                        nodeGroup.updateTemplate();
+                        updatedTemplates.remove(group);
+                    });
+                });
+            },updaterInterval,updaterInterval,TimeUnit.MINUTES);
+        }
+
         scheduledExecutorService.scheduleWithFixedDelay(this::manageGroups, 1, 1, TimeUnit.MINUTES);
+    }
+
+    public void onTemplateUpdateInfo(@NotNull GroupTemplateUpdateInfo templateUpdateInfo){
+        updatedTemplates.add(templateUpdateInfo.getGroup());
     }
 
     public void stop() {

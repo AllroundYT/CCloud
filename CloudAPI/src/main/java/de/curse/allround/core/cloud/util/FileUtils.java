@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud.util;
 
+import de.curse.allround.core.cloud.network.packet.Packet;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,12 +8,42 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchService;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class FileUtils {
 
+
+    @Contract(pure = true)
+    public static void copy(@NotNull File fileToCopy, File destination) throws IOException {
+        if (fileToCopy.isDirectory()){
+
+            if (!destination.isDirectory() && !destination.mkdirs()) throw new IOException("Could not create destination directory. "+destination);
+
+            File[] children = fileToCopy.listFiles();
+            if (children == null) return;
+            for (File child : children) {
+                File newFile = new File(destination, child.getName());
+                copy(child,newFile);
+            }
+            return;
+        }
+        if (!destination.exists() && !destination.createNewFile()) throw new IOException("Destination file does not exist. "+destination);
+
+        try (FileInputStream fileInputStream = new FileInputStream(fileToCopy);
+        FileOutputStream fileOutputStream = new FileOutputStream(destination)){
+            fileOutputStream.write(fileInputStream.readAllBytes());
+            fileOutputStream.flush();
+        }
+    }
     public static void zipFile(@NotNull File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()){
             return;
@@ -41,6 +72,18 @@ public class FileUtils {
             zipOut.write(bytes,0,length);
         }
         fis.close();
+    }
+
+    public static boolean delete(@NotNull File file){
+        if (file.isDirectory()){
+            File[] children = file.listFiles();
+            if (children == null) return false;
+            for (File child : children) {
+                if (!delete(child)) return false;
+            }
+            return true;
+        }
+        return file.delete();
     }
 
     @Contract(pure = true)

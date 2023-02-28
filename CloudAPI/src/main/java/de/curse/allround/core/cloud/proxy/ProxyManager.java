@@ -25,7 +25,7 @@ public abstract class ProxyManager {
         if (getProxy(proxy).isEmpty()) return;
         if (getProxy(proxy).get().isRunning()){
             getProxy(proxy).get().stop().handleAsync((success, throwable) -> {
-                if (success){
+                if ((boolean)success){
                     ProxyDeleteInfo proxyDeleteInfo = new ProxyDeleteInfo(proxy);
                     NetworkManager.getInstance().sendPacket(proxyDeleteInfo);
                     removeProxy(proxy);

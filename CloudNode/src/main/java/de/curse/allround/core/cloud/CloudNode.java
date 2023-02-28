@@ -21,10 +21,10 @@ import de.curse.allround.core.cloud.network.packet_types.server.ServerDataReques
 import de.curse.allround.core.cloud.network.packet_types.server.ServerDataResponse;
 import de.curse.allround.core.cloud.network.packet_types.server.ServerListRequest;
 import de.curse.allround.core.cloud.network.packet_types.server.ServerListResponse;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupDataRequest;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupDataResponse;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupListRequest;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupListResponse;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupDataRequest;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupDataResponse;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupListRequest;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupListResponse;
 import de.curse.allround.core.cloud.player.NodePlayer;
 import de.curse.allround.core.cloud.player.PlayerManager;
 import de.curse.allround.core.cloud.proxy.NodeProxy;
@@ -126,9 +126,9 @@ public class CloudNode extends CloudAPI {
     public void init() {
         try {
             Files.createDirectories(Path.of("Extensions"));
-            Files.createDirectories(Path.of("Storage", "ServerGroups"));
+            Files.createDirectories(NodeGroupManager.GROUPS_DIR);
             Files.createDirectories(Path.of("Storage", "Templates", "Servers"));
-            Files.createDirectories(Path.of("Storage", "Templates", "Proxies"));
+            Files.createDirectories(Path.of("Storage", "Templates", "Proxy"));
             Files.createDirectories(Path.of("Temp", "Servers"));
             Files.createDirectories(Path.of("Temp", "Proxies"));
         } catch (IOException e) {

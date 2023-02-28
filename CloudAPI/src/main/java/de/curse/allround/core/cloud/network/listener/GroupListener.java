@@ -2,9 +2,9 @@ package de.curse.allround.core.cloud.network.listener;
 
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.network.packet.PacketBus;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupCreateInfo;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupDeleteInfo;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupUpdateInfo;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupCreateInfo;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupDeleteInfo;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupUpdateInfo;
 import de.curse.allround.core.cloud.servergroup.ServerGroup;
 
 public class GroupListener {

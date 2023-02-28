@@ -14,6 +14,8 @@ public class NodeConfiguration extends Document {
             e.printStackTrace();
         }
 
+        addIfNotExists("server-group-template-update-interval",60);
+
         addIfNotExists("redis-user","cloud");
         addIfNotExists("redis-password","password");
         addIfNotExists("redis-host","127.0.0.1");
@@ -27,6 +29,14 @@ public class NodeConfiguration extends Document {
         addIfNotExists("rabbitmq-connection-timeout",10000);
 
         write(path);
+    }
+
+    /**
+     * Dieser Wert gibt an wie viele Minuten es dauert bis Gruppen Templates welche verändert wurden automatisch heruntergeladen werden.
+     * @return Zeit Interval in Minuten
+     */
+    public int getServerGroupTemplateUpdateInterval(){
+        return getInteger("server-group-template-update-interval");
     }
 
     public String getRabbitMQHost(){

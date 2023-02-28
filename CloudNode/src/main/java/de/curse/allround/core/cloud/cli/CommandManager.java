@@ -1,5 +1,6 @@
 package de.curse.allround.core.cloud.cli;
 
+import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.cli.commands.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,13 +40,17 @@ public class CommandManager {
 
     public void start(){
         startInputScanner();
+        registerCommand(new HelpCommand());
 
         //register commands
         registerCommand(new ListNodesCommand());
         registerCommand(new ListeGroupsCommand());
-        registerCommand(new HelpCommand());
         registerCommand(new ListServersCommand());
         registerCommand(new GroupInfoCommand());
+
+        if (CloudAPI.getInstance().getModuleManager().isMainNode()){
+            registerCommand(new BroadcastTemplateUpdateCommand());
+        }
     }
 
     public List<Command> getCommands() {

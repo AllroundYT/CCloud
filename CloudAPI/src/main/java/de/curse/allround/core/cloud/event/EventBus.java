@@ -76,7 +76,6 @@ public class EventBus {
     }
 
     @RequiredArgsConstructor
-    @AllArgsConstructor
     @Getter
     protected static class EventListener<T extends Event> {
         private final Class<T> eventClass;

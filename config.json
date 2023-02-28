@@ -8,5 +8,6 @@
   "rabbitmq-port": 6845,
   "rabbitmq-user": "cloud",
   "rabbitmq-password": "password",
-  "rabbitmq-connection-timeout": 10000
+  "rabbitmq-connection-timeout": 10000,
+  "server-group-template-update-interval": 60
 }

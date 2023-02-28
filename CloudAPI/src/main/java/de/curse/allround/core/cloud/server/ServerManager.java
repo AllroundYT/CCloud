@@ -24,7 +24,7 @@ public class ServerManager {
         if (getServer(server).isEmpty()) return;
         if (getServer(server).get().isRunning()) {
             getServer(server).get().stop().handleAsync((success, throwable) -> {
-                if (success) {
+                if ((boolean)success) {
                     ServerDeleteInfo serverDeleteInfo = new ServerDeleteInfo(server);
                     NetworkManager.getInstance().sendPacket(serverDeleteInfo);
                     removeServer(server);

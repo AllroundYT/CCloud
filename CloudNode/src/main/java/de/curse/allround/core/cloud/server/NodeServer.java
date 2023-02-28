@@ -13,25 +13,29 @@ public class NodeServer extends Server {
     public NodeServer(String name, UUID node, UUID networkId, String status, ServerGroup serverGroup, boolean maintenance, String joinPermissions, String host, int port, boolean running) {
         super(name, node, networkId, status, serverGroup, maintenance, joinPermissions, host, port, running);
     }
+    private Process process;
 
     public NodeServer(String name,ServerGroup serverGroup) {
         super(name,serverGroup);
+        setStatus("CREATED");
     }
 
     public void startProcess(){
 
     }
 
+    public void stopProcess(){
+
+    }
+
     @Override
-    public CompletableFuture<Boolean> start(StartConfiguration startConfiguration) {
+    public CompletableFuture<?> start(StartConfiguration startConfiguration) {
         //Wenn dieser server von diesem Node kontrolliert wird, ist er auf diesem vServer und muss von diesem Node gestartet werden.
         if (getNode().equals(CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId())){
-
-            //hier muss der Process gestartet werden und dann ein update gesendet
-
+            startProcess();
             setStatus("STARTING");
             broadcastUpdate();
-            return null;
+            return new CompletableFuture<>().completeAsync(() -> true);
         }
 
         ServerStartRequest serverStartRequest = new ServerStartRequest(getName());
@@ -46,13 +50,20 @@ public class NodeServer extends Server {
     }
 
     @Override
-    public CompletableFuture<Boolean> stop() {
+    public CompletableFuture<?> stop() {
         ServerStopRequest serverStopRequest = new ServerStopRequest(getName());
         return NetworkManager.getInstance().sendRequest(serverStopRequest).handleAsync((packet, throwable) -> {
             ServerStopResponse serverStopResponse = PacketConverter.getInstance().convert(packet);
             if (serverStopResponse.getResult().equalsIgnoreCase("SUCCESS")){
                 setRunning(false);
                 return true;
+            }else {
+                if (getNode().equals(CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId())){
+                    stopProcess();
+                    setStatus("STOPPED");
+                    broadcastUpdate();
+                    return new CompletableFuture<>().completeAsync(() -> true);
+                }
             }
             return false;
         });

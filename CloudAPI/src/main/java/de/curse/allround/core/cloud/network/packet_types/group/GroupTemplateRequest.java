@@ -1,7 +1,6 @@
-package de.curse.allround.core.cloud.network.packet_types.servergroup;
+package de.curse.allround.core.cloud.network.packet_types.group;
 
 import de.curse.allround.core.cloud.CloudAPI;
-import de.curse.allround.core.cloud.network.packet.NetworkManager;
 import de.curse.allround.core.cloud.network.packet.Packet;
 import de.curse.allround.core.cloud.network.packet.PacketType;
 import lombok.Getter;

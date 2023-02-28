@@ -4,7 +4,7 @@ import de.curse.allround.core.cloud.network.packet_types.module.*;
 import de.curse.allround.core.cloud.network.packet_types.player.*;
 import de.curse.allround.core.cloud.network.packet_types.proxy.*;
 import de.curse.allround.core.cloud.network.packet_types.server.*;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.*;
+import de.curse.allround.core.cloud.network.packet_types.group.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,6 +80,7 @@ public class PacketConverter {
         registerType("GROUP_UPDATE_INFO",GroupUpdateInfo.class);
         registerType("GROUP_TEMPLATE_REQUEST",GroupTemplateRequest.class);
         registerType("GROUP_TEMPLATE_RESPONSE",GroupTemplateResponse.class);
+        registerType("GROUP_TEMPLATE_UPDATE_INFO",GroupTemplateUpdateInfo.class);
     }
 
     public static PacketConverter getInstance() {

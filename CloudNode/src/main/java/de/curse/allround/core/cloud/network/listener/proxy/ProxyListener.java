@@ -16,7 +16,7 @@ public class ProxyListener {
             ProxyCreateInfo proxyCreateInfo = packet.convert(ProxyCreateInfo.class);
             if (proxyCreateInfo.getProxy().getNode().equals(CloudAPI.getInstance().getModuleManager().getThisModule().getNetworkId())){
                 NodeProxy nodeProxy = (NodeProxy) proxyCreateInfo.getProxy();
-                nodeProxy.createFolder();
+                nodeProxy.copyTemplate();
             }
         });
 

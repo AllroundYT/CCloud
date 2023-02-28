@@ -3,7 +3,7 @@ package de.curse.allround.core.cloud.cli.commands;
 import de.curse.allround.core.cloud.CloudAPI;
 import de.curse.allround.core.cloud.cli.Command;
 import de.curse.allround.core.cloud.network.packet.NetworkManager;
-import de.curse.allround.core.cloud.network.packet_types.servergroup.GroupTemplateUpdateInfo;
+import de.curse.allround.core.cloud.network.packet_types.group.GroupTemplateUpdateInfo;
 import de.curse.allround.core.cloud.servergroup.ServerGroup;
 import org.jetbrains.annotations.NotNull;
 

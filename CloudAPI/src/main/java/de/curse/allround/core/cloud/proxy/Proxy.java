@@ -30,6 +30,6 @@ public abstract class Proxy {
     public void broadcastUpdate(){
         NetworkManager.getInstance().sendPacket(new ProxyUpdateInfo(this));
     }
-    public abstract CompletableFuture<Boolean> start();
-    public abstract CompletableFuture<Boolean> stop();
+    public abstract CompletableFuture<?> start();
+    public abstract CompletableFuture<?> stop();
 }
